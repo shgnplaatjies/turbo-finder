@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 
 class DistanceUnit(models.Model):
   name = models.CharField(max_length=20)
-  symbol = models.CharField(max_length=3, null=True)
+  symbol = models.CharField(max_length=3, blank=True, default='')
   in_metric = models.DecimalField(decimal_places=5, max_digits=20)
 
 
