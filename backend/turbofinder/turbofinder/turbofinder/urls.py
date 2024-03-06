@@ -20,7 +20,7 @@ from rest_framework.authtoken.views import obtain_auth_token
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # path('api', include('emissions_estimator.urls'))
     path('api/', include('vehicle.urls')),
+    path('api/', include('emissions_estimator.urls')),
     path('api/token/',obtain_auth_token, name='obtain-auth-token')
 ]

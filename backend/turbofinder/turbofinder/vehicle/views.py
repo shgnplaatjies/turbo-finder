@@ -7,9 +7,11 @@ from .serializers import VehicleMakeSerializer, VehicleModelSerializer
 from decouple import config
 from datetime import datetime
 import requests
+
 class VehicleMakeListCreateView(generics.ListCreateAPIView):
   queryset = VehicleMake.objects.all()
   serializer_class = VehicleMakeSerializer
+  permission_classes = [permissions.IsAuthenticated]
   
   def create(self, request, *args, **kwargs):
     serializer = self.get_serializer(data=request.data)
@@ -44,6 +46,15 @@ class VehicleModelCreateView(generics.ListCreateAPIView):
             {"error": f"Vehicle Make with UUID:{make_uuid} does not exist."},
             status=status.HTTP_404_NOT_FOUND
         )
+
+    
+    existing_make = VehicleMake.objects.filter(uuid=make_uuid).first();
+    
+    if existing_make:
+      return Response(
+        {'error': 'This Make already exists in the database'},
+        status=status.HTTP_409_CONFLICT
+      )
 
     
     carbon_api_url = f"{CARBON_EMISSIONS_API_URL}/vehicle_makes/{make_uuid}/vehicle_models"
@@ -142,6 +153,8 @@ class VehicleMakeRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView
       
   def destroy(self, request, *args, **kwargs):
     instance = self.get_object()
+    serializer = self.get_serializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
     
     if instance.vehiclemodel_set.exists():
           return Response(
@@ -149,6 +162,6 @@ class VehicleMakeRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView
             status=status.HTTP_400_BAD_REQUEST
           )
 
-    self.perform_destroy(instance)
+    serializer.perform_destroy(instance)
 
     return Response(status=status.HTTP_204_NO_CONTENT)
