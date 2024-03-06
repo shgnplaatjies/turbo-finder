@@ -1,16 +1,22 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import generics, status, permissions
+from rest_framework.throttling import UserRateThrottle
 from rest_framework.response import Response
-from .models import DistanceUnit, EmissionEstimate, ViewableEmissionEstimates, TurboFinderUser
+from .models import DistanceUnit, EmissionEstimate, ViewableEmissionEstimates, TurboFinderUser, VehicleModel
 from .serializers import DistanceUnitSerializer, EmissionEstimateSerializer, ViewableEmissionEstimatesSerializer, TurboFinderUserSerializer
 import requests
+from decouple import config
+from datetime import datetime, timedelta, timezone
 
 class DistanceUnitListCreateView(generics.ListCreateAPIView):
     queryset = DistanceUnit.objects.all()
     serializer_class = DistanceUnitSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
 class DistanceUnitRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = DistanceUnit.objects.all()
     serializer_class = DistanceUnitSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -27,50 +33,110 @@ class UserAddCreditsView(generics.RetrieveUpdateAPIView):
     queryset = TurboFinderUser.objects.all()
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = TurboFinderUserSerializer
+    
+    
+    throttle_classes = [UserRateThrottle]
+    
+    
+    def get(self, request, *args, **kwargs):
+        user = self.request.user
+        serializer = self.get_serializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def patch(self, request, *args, **kwargs):
         user = self.request.user
         credits_to_add = 5
 
-        try:
-            user.credits += credits_to_add
-            user.save()
-            serializer = self.get_serializer(user)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        except:
-            return Response( status=status.HTTP_400_BAD_REQUEST)
+        user.credits += credits_to_add
+        user.save()
+        serializer = self.get_serializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class EmissionEstimateCreateView(generics.CreateAPIView):
     queryset = EmissionEstimate.objects.all()
     serializer_class = EmissionEstimateSerializer
     permission_classes = [permissions.IsAuthenticated]
+    
+    throttle_classes = [UserRateThrottle]
 
     def create(self, request, *args, **kwargs):
         self.check_permissions(request)
 
-        emissions_estimate_serializer = self.get_serializer(data=request.data)
-        emissions_estimate_serializer.is_valid(raise_exception=True)
+        user = self.request.user
+        vehicle_uuid = request.data.get('uuid')
+        distance_unit = 'km'
 
+        recent_estimate = EmissionEstimate.objects.filter(model__uuid=vehicle_uuid, estimated_at__gte=datetime.now(timezone.utc) - timedelta(hours=12)).first()
+        
+        if recent_estimate:
+            serializer  = self.get_serializer(recent_estimate)
+            return Response(serializer.data, status=status.HTTP_304_NOT_MODIFIED)
+        
         credits_to_subtract = 5
+        if user.credits <= credits_to_subtract:
+            return Response({'error': f'Insufficient funds, available credits:{user.credits}, required credits:{credits_to_subtract}'}, status=status.HTTP_402_PAYMENT_REQUIRED)
+        
+        vehicle_model = VehicleModel.objects.filter(uuid = vehicle_uuid).first()
+        
+        if not vehicle_model:
+            return Response({"error":"Invalid model UUID"}, status=status.HTTP_404_NOT_FOUND)
 
-        if self.request.user.credits >= credits_to_subtract:
-            self.request.user.credits -= credits_to_subtract
+        distance_value = 100
+        carbon_api_url = config('CARBON_INTERFACE_API_V1')+'/estimates'
+        api_headers = {
+            "Authorization": f"Bearer {config('CARBON_INTERFACE_API_KEY')}",
+            "Content-Type": "application/json"
+        }
+        payload = {
+            "type": "vehicle",
+            "distance_unit": distance_unit,
+            "distance_value": distance_value,
+            "vehicle_model_id": vehicle_uuid
+        }
 
-            viewable_emission_estimate = ViewableEmissionEstimates(
-                user=self.request.user,
-                emission_estimate=emissions_estimate_serializer
-            )
+        response = requests.post(carbon_api_url, headers=api_headers, json=payload)
+        
+        if 200 >= response.status_code and response.status_code >= 300:
+            print(response, carbon_api_url, api_headers)
+            return Response({"Error": "Internal Server Error, cannot reach external API", "status":response.status_code}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-            viewable_emission_estimate.save()
-            self.request.user.save()
-            emissions_estimate_serializer.save()
+        response_data = response.json()
 
-            return Response(emissions_estimate_serializer.data, status=status.HTTP_201_CREATED)
-        else:
+        carbon_grams = response_data['data']['attributes']['carbon_g']
+        estimated_at = response_data['data']['attributes']['estimated_at']
+        
+        estimated_at_datetime = datetime.strptime(estimated_at, "%Y-%m-%dT%H:%M:%S.%fZ")
+
+        
+        user.credits -= credits_to_subtract
+        user.save()
+
+        unit_id = ''
+
+        try:
+            unit_id = DistanceUnit.objects.get(symbol=distance_unit)
+        except DistanceUnit.DoesNotExist:
             return Response(
-                {"error": "Insufficient credits."},
+                {"error": f"DistanceUnit with name '{distance_unit}' does not exist."},
                 status=status.HTTP_400_BAD_REQUEST
             )
+
+        emission_estimate = EmissionEstimate.objects.create(
+            model=vehicle_model,
+            unit_id=unit_id,
+            estimated_by=user,
+            estimated_at=estimated_at_datetime,
+            carbon_grams=carbon_grams,
+            distance_scale=distance_value
+        )
+
+        
+        viewable_estimate = ViewableEmissionEstimates(emissions_estimate=emission_estimate, user_id=user)
+        viewable_estimate.save()
+
+        serializer = self.get_serializer(emission_estimate)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
 
 class ViewableEmissionEstimatesListCreateView(generics.ListCreateAPIView):
     queryset = ViewableEmissionEstimates.objects.all()

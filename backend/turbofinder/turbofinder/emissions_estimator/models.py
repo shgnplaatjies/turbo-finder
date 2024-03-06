@@ -32,4 +32,4 @@ class ViewableEmissionEstimates(models.Model):
 
   
   def __str__(self):
-      return f"{self.make.name} {self.name} {self.year.year}"
+    return f"{self.emissions_estimate.model.make.name} {self.emissions_estimate.model.name} {self.emissions_estimate.model.year.year} - User: {self.user_id.username}"

@@ -2,6 +2,7 @@ from django.shortcuts import render
 from rest_framework import generics, status, permissions
 from rest_framework.response import Response
 from globalUrls import CARBON_EMISSIONS_API_URL
+from rest_framework.throttling import UserRateThrottle
 from .models import VehicleMake, VehicleModel
 from .serializers import VehicleMakeSerializer, VehicleModelSerializer
 from decouple import config
@@ -27,6 +28,7 @@ class VehicleMakeListCreateView(generics.ListCreateAPIView):
 class VehicleModelCreateView(generics.ListCreateAPIView):
   permission_classes = [permissions.IsAdminUser]
   serializer_class = VehicleModelSerializer
+  throttle_classes = [UserRateThrottle]
   
   def get_queryset(self):
     uuid = self.kwargs.get('make_uuid')
