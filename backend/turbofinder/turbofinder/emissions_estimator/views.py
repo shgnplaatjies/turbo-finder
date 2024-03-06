@@ -37,6 +37,10 @@ class UserAddCreditsView(generics.RetrieveUpdateAPIView):
     
     throttle_classes = [UserRateThrottle]
     
+    def get_queryset(self):
+        if self.request.user.is_superuser:
+            return TurboFinderUser.objects.all()
+        return TurboFinderUser.objects.filter(user_id=self.request.user)
     
     def get(self, request, *args, **kwargs):
         user = self.request.user
@@ -73,7 +77,7 @@ class EmissionEstimateCreateView(generics.CreateAPIView):
             return Response(serializer.data, status=status.HTTP_304_NOT_MODIFIED)
         
         credits_to_subtract = 5
-        if user.credits <= credits_to_subtract:
+        if user.credits < credits_to_subtract:
             return Response({'error': f'Insufficient funds, available credits:{user.credits}, required credits:{credits_to_subtract}'}, status=status.HTTP_402_PAYMENT_REQUIRED)
         
         vehicle_model = VehicleModel.objects.filter(uuid = vehicle_uuid).first()
@@ -142,6 +146,12 @@ class ViewableEmissionEstimatesListCreateView(generics.ListCreateAPIView):
     queryset = ViewableEmissionEstimates.objects.all()
     serializer_class = ViewableEmissionEstimatesSerializer
     permission_classes = [permissions.IsAuthenticated]
+    
+    def get_queryset(self):
+        if self.request.user.is_superuser:
+            return ViewableEmissionEstimates.objects.all()
+        return ViewableEmissionEstimates.objects.filter(user_id=self.request.user)
+
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)

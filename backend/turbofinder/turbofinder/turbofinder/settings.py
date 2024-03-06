@@ -146,7 +146,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ],
     'DEFAULT_THROTTLE_RATES': {
-        'user': '10/hour',
+        'user': f'{config("THROTTLE_RATE")}/hour',
     },
 }
 
