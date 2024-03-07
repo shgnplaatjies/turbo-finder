@@ -20,13 +20,18 @@ from django.urls import path, include
 from rest_framework.authtoken.views import obtain_auth_token
 from django.contrib.staticfiles.views import serve
 from django.conf.urls.static import static
+from dj_rest_auth.views import LoginView, LogoutView
+from dj_rest_auth.registration.views import RegisterView
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('login/',  LoginView.as_view(), name='login'),
+    path('logout/',  LogoutView.as_view(), name='logout'),
+    path('register/',  RegisterView.as_view(), name='register'),
     path('api/', include('vehicle.urls')),
     path('api/', include('emissions_estimator.urls')),
-    path('api/token/',obtain_auth_token, name='obtain-auth-token')
+    path('api/token/', obtain_auth_token, name='obtain-auth-token')
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 if settings.DEBUG:
     urlpatterns += [

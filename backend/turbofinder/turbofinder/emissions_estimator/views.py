@@ -34,7 +34,6 @@ class UserAddCreditsView(generics.RetrieveUpdateAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = TurboFinderUserSerializer
     
-    
     throttle_classes = [UserRateThrottle]
     
     def get_queryset(self):
@@ -45,7 +44,10 @@ class UserAddCreditsView(generics.RetrieveUpdateAPIView):
     def get(self, request, *args, **kwargs):
         user = self.request.user
         serializer = self.get_serializer(user)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        
+        response = Response(serializer.data, status=status.HTTP_200_OK)
+        
+        return response
 
     def patch(self, request, *args, **kwargs):
         user = self.request.user
@@ -140,7 +142,6 @@ class EmissionEstimateCreateView(generics.CreateAPIView):
 
         serializer = self.get_serializer(emission_estimate)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-
 
 class ViewableEmissionEstimatesListCreateView(generics.ListCreateAPIView):
     queryset = ViewableEmissionEstimates.objects.all()

@@ -43,6 +43,9 @@ INSTALLED_APPS = [
     'emissions_estimator',
     'rest_framework.authtoken',
     'rest_framework',
+    'dj_rest_auth',
+    'allauth',
+    'allauth.account',
     'corsheaders',
 ]
 
@@ -53,6 +56,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -159,6 +163,14 @@ REST_FRAMEWORK = {
     },
 }
 
+AUTHENTICATION_CLASSES = [
+    'dj_rest_auth.authentication.AllAuthJWTAuthentication',
+]
+
 AUTH_USER_MODEL = 'emissions_estimator.TurboFinderUser'
 
-CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_ALLOW_ALL = True # TODO: List explicitly in stg + prod
+
+REST_USE_JWT = True
+
+ACCOUNT_EMAIL_VERIFICATION = 'none' # TODO: Enable email verification during stg + prod

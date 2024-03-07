@@ -127,7 +127,6 @@ class VehicleModelCreateView(generics.ListCreateAPIView):
       status=status.HTTP_424_FAILED_DEPENDENCY
     )
 
-
 class VehicleMakeRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
   queryset = VehicleMake.objects.all()
   serializer_class = VehicleMakeSerializer
