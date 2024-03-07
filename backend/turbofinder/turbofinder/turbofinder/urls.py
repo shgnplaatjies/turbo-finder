@@ -18,18 +18,16 @@ from django.conf import settings
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.authtoken.views import obtain_auth_token
-from react_app.views import react_index
 from django.contrib.staticfiles.views import serve
+from django.conf.urls.static import static
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('react_app.urls')),
     path('api/', include('vehicle.urls')),
     path('api/', include('emissions_estimator.urls')),
-    path('react/', react_index, name='react_index'),
     path('api/token/',obtain_auth_token, name='obtain-auth-token')
-]
+]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 if settings.DEBUG:
     urlpatterns += [
         path('static/<path:path>', serve),
