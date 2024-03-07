@@ -14,13 +14,23 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf import settings
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.authtoken.views import obtain_auth_token
+from react_app.views import react_index
+from django.contrib.staticfiles.views import serve
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', include('react_app.urls')),
     path('api/', include('vehicle.urls')),
     path('api/', include('emissions_estimator.urls')),
+    path('react/', react_index, name='react_index'),
     path('api/token/',obtain_auth_token, name='obtain-auth-token')
 ]
+if settings.DEBUG:
+    urlpatterns += [
+        path('static/<path:path>', serve),
+    ]

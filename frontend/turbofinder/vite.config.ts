@@ -6,5 +6,14 @@ export default defineConfig({
   plugins: [react()],
   build: {
     outDir: "static",
+    rollupOptions: {
+      output: {
+        entryFileNames: "main.js",
+
+        chunkFileNames: "chunk.js",
+
+        assetFileNames: "assets/[name].[ext]",
+      },
+    },
   },
 });

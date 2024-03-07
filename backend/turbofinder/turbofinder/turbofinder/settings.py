@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+import os
 from pathlib import Path
 from decouple import config
 
@@ -41,11 +42,14 @@ INSTALLED_APPS = [
     'vehicle',
     'emissions_estimator',
     'rest_framework.authtoken',
+    'rest_framework',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -58,7 +62,7 @@ ROOT_URLCONF = 'turbofinder.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'react_app/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -128,6 +132,11 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+STATICFILES_DIRS = [
+    # os.path.join(BASE_DIR, 'react_app/static'),
+    BASE_DIR / 'react_app/static',
+]
+STATIC_ROOT = BASE_DIR / "static"
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
@@ -151,3 +160,5 @@ REST_FRAMEWORK = {
 }
 
 AUTH_USER_MODEL = 'emissions_estimator.TurboFinderUser'
+
+CORS_ORIGIN_ALLOW_ALL = True
