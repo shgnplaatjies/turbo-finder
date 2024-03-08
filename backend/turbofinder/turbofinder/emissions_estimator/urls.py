@@ -7,6 +7,7 @@ from .views import (
     ViewableEmissionEstimatesListCreateView,
     ViewableEmissionEstimatesRetrieveDestroyView,
     UserListCreditsView,
+    CSRFGeneratorView,
     AllViewableEmissionEstimates
 )
 
@@ -19,4 +20,6 @@ urlpatterns = [
     path('viewable-emission-estimates/', ViewableEmissionEstimatesListCreateView.as_view(), name='viewable-emission-estimates-list-create'),
     path('viewable-emission-estimates/<int:pk>/', ViewableEmissionEstimatesRetrieveDestroyView.as_view(), name='viewable-emission-estimates-retrieve-destroy'),
     path('viewable-emission-estimates/all/', AllViewableEmissionEstimates.as_view(), name='all-viewable-emission-estimates'),
+    path('generate-csrf-token/', CSRFGeneratorView.as_view(), name='generate-csrf-token'),
+
 ]

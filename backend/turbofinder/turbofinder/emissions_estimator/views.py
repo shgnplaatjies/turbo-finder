@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import generics, status, permissions
+from rest_framework import generics, views, status, permissions
 from rest_framework.throttling import UserRateThrottle
 from rest_framework.response import Response
 from .models import DistanceUnit, EmissionEstimate, ViewableEmissionEstimates, TurboFinderUser, VehicleModel
@@ -8,6 +8,20 @@ import requests
 from decouple import config
 from datetime import datetime, timedelta, timezone
 from rest_framework.authentication import TokenAuthentication
+from django.middleware.csrf import get_token
+from django.views.decorators.csrf import csrf_exempt
+
+from django.utils.decorators import method_decorator
+from rest_framework.views import APIView
+
+@method_decorator(csrf_exempt, name='dispatch')
+class CSRFGeneratorView(generics.ListAPIView):
+    permission_classes = [permissions.IsAdminUser]
+
+    def get(self, request, *args, **kwargs):
+        csrf_token = get_token(request)
+        return Response({'csrf_token': csrf_token})
+
 
 class DistanceUnitListCreateView(generics.ListCreateAPIView):
     queryset = DistanceUnit.objects.all()
