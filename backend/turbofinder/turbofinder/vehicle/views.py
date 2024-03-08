@@ -8,11 +8,13 @@ from .serializers import VehicleMakeSerializer, VehicleModelSerializer
 from decouple import config
 from datetime import datetime
 import requests
+from rest_framework.authentication import TokenAuthentication
 
 class VehicleMakeListCreateView(generics.ListCreateAPIView):
   queryset = VehicleMake.objects.all()
   serializer_class = VehicleMakeSerializer
   permission_classes = [permissions.IsAuthenticated]
+  authentication_classes = [TokenAuthentication]
   
   def create(self, request, *args, **kwargs):
     serializer = self.get_serializer(data=request.data)
@@ -28,6 +30,7 @@ class VehicleMakeListCreateView(generics.ListCreateAPIView):
 class VehicleModelCreateView(generics.ListCreateAPIView):
   permission_classes = [permissions.IsAdminUser]
   serializer_class = VehicleModelSerializer
+  authentication_classes = [TokenAuthentication]
   throttle_classes = [UserRateThrottle]
   
   def get_queryset(self):
@@ -130,6 +133,8 @@ class VehicleModelCreateView(generics.ListCreateAPIView):
 class VehicleMakeRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
   queryset = VehicleMake.objects.all()
   serializer_class = VehicleMakeSerializer
+  authentication_classes = [TokenAuthentication]
+  permission_classes= [permissions.IsAuthenticated]
   
   def update(self, request, *args, **kwargs):
     pk = kwargs.get('pk')
@@ -166,3 +171,4 @@ class VehicleMakeRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView
     serializer.perform_destroy(instance)
 
     return Response(status=status.HTTP_204_NO_CONTENT)
+  

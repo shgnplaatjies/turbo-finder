@@ -7,16 +7,19 @@ from .serializers import DistanceUnitSerializer, EmissionEstimateSerializer, Vie
 import requests
 from decouple import config
 from datetime import datetime, timedelta, timezone
+from rest_framework.authentication import TokenAuthentication
 
 class DistanceUnitListCreateView(generics.ListCreateAPIView):
     queryset = DistanceUnit.objects.all()
     serializer_class = DistanceUnitSerializer
     permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
 
 class DistanceUnitRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = DistanceUnit.objects.all()
     serializer_class = DistanceUnitSerializer
     permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -28,11 +31,21 @@ class DistanceUnitRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIVie
             )
 
         return super().destroy(request, *args, **kwargs)
+    
+class UserListCreditsView(generics.ListAPIView):
+    queryset = TurboFinderUser.objects.all()
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = TurboFinderUserSerializer
+    authentication_classes = [TokenAuthentication]
+
+    def get_queryset(self):
+        return TurboFinderUser.objects.filter(username=self.request.user.username)
 
 class UserAddCreditsView(generics.RetrieveUpdateAPIView):
     queryset = TurboFinderUser.objects.all()
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = TurboFinderUserSerializer
+    authentication_classes = [TokenAuthentication]
     
     throttle_classes = [UserRateThrottle]
     
@@ -62,6 +75,7 @@ class EmissionEstimateCreateView(generics.CreateAPIView):
     queryset = EmissionEstimate.objects.all()
     serializer_class = EmissionEstimateSerializer
     permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
     
     throttle_classes = [UserRateThrottle]
 
@@ -147,6 +161,7 @@ class ViewableEmissionEstimatesListCreateView(generics.ListCreateAPIView):
     queryset = ViewableEmissionEstimates.objects.all()
     serializer_class = ViewableEmissionEstimatesSerializer
     permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
     
     def get_queryset(self):
         if self.request.user.is_superuser:
@@ -178,6 +193,7 @@ class ViewableEmissionEstimatesRetrieveDestroyView(generics.RetrieveDestroyAPIVi
     queryset = ViewableEmissionEstimates.objects.all()
     serializer_class = ViewableEmissionEstimatesSerializer
     permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
 
     def destroy(self, request, *args, **kwargs):
         self.check_permissions(request)

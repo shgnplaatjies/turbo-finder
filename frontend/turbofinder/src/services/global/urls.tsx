@@ -1,15 +1,16 @@
 export const GLOBAL_URLS = {
   applicationRoot: "http://127.0.0.1:8000/",
   getTokenUrl: "api/token/",
-  vehicleModelsRetrieve: "vehicle-make/:make_uuid/models/",
-  vehicleMakesGeneral: "vehicle-makes/",
-  vehicleMakesRetrieve: "vehicle-makes/:pk/",
-  distanceUnitsGeneral: "distance-units/",
-  distanceUnitsRetrieve: "distance-units/:pk/",
-  userCreditsRetrieve: "user/add-credits/:pk/",
-  emissionsEstimateGeneral: "emission-estimate/",
-  viewableEmissionsEstimateGeneral: "viewable-emission-estimates/",
-  viewableEmissionsEstimateRetrieve: "viewable-emission-estimates/:pk/",
+  vehicleModelsRetrieve: "api/vehicle-make/:make_uuid/models/",
+  vehicleMakesGeneral: "api/vehicle-makes/",
+  vehicleMakesRetrieve: "api/vehicle-makes/:pk/",
+  distanceUnitsGeneral: "api/distance-units/",
+  distanceUnitsRetrieve: "api/distance-units/:pk/",
+  userCreditsRetrieve: "api/user/add-credits/:pk/",
+  userCreditsList: "api/user/credits/",
+  emissionsEstimateGeneral: "api/emission-estimate/",
+  viewableEmissionsEstimateGeneral: "api/viewable-emission-estimates/",
+  viewableEmissionsEstimateRetrieve: "api/viewable-emission-estimates/:pk/",
 };
 
 export const TOYOTA_UUID = "2b1d0cd5-59be-4010-83b3-b60c5e5342da";

@@ -17,7 +17,7 @@ Including another URLconf
 from django.conf import settings
 from django.contrib import admin
 from django.urls import path, include
-from rest_framework.authtoken.views import obtain_auth_token
+from rest_framework.authtoken.views import ObtainAuthToken
 from django.contrib.staticfiles.views import serve
 from django.conf.urls.static import static
 from dj_rest_auth.views import LoginView, LogoutView
@@ -31,7 +31,7 @@ urlpatterns = [
     path('register/',  RegisterView.as_view(), name='register'),
     path('api/', include('vehicle.urls')),
     path('api/', include('emissions_estimator.urls')),
-    path('api/token/', obtain_auth_token, name='obtain-auth-token')
+    path('api/token/', ObtainAuthToken.as_view(), name='obtain-auth-token'),
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 if settings.DEBUG:
     urlpatterns += [

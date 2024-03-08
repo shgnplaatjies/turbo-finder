@@ -169,7 +169,12 @@ AUTHENTICATION_CLASSES = [
 
 AUTH_USER_MODEL = 'emissions_estimator.TurboFinderUser'
 
-CORS_ORIGIN_ALLOW_ALL = True # TODO: List explicitly in stg + prod
+CORS_ORIGIN_ALLOW_ALL = False # TODO: List explicitly in stg + prod
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:5173',
+    'http://127.0.0.1:5173'
+]
 
 REST_USE_JWT = True
 
