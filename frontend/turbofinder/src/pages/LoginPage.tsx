@@ -47,6 +47,7 @@ const LoginPage: React.FC = () => {
         });
 
         navigate("/", { replace: true });
+        window.location.reload();
         return;
       }
 

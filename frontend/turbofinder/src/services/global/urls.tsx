@@ -1,6 +1,8 @@
 export const GLOBAL_URLS = {
   applicationRoot: "http://127.0.0.1:8000/",
   getTokenUrl: "api/token/",
+  logoutUrl: "logout/",
+  registerUrl: "register/",
   vehicleModelsRetrieve: "api/vehicle-make/:make_uuid/models/",
   vehicleMakesGeneral: "api/vehicle-makes/",
   vehicleMakesRetrieve: "api/vehicle-makes/:pk/",

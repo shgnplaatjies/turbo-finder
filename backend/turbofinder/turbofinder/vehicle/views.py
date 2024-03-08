@@ -28,10 +28,25 @@ class VehicleMakeListCreateView(generics.ListCreateAPIView):
     )
 
 class VehicleModelCreateView(generics.ListCreateAPIView):
-  permission_classes = [permissions.IsAdminUser]
+  permission_classes = [permissions.IsAuthenticated]
   serializer_class = VehicleModelSerializer
   authentication_classes = [TokenAuthentication]
   throttle_classes = [UserRateThrottle]
+  
+  def get_offset_limit(self, request):
+      try:
+          offset = int(request.data.get('offset', 0))
+          limit = int(request.data.get('limit', 100))
+      except ValueError:
+          offset = 0
+          limit = 100
+      return offset, limit
+
+  def get(self, request, *args, **kwargs):
+      offset, limit = self.get_offset_limit(request)
+      queryset = self.get_queryset()[offset:offset+limit]
+      serializer = self.get_serializer(queryset, many=True)
+      return Response(serializer.data)
   
   def get_queryset(self):
     uuid = self.kwargs.get('make_uuid')
@@ -40,7 +55,13 @@ class VehicleModelCreateView(generics.ListCreateAPIView):
   def create(self, request, *args, **kwargs):
     response_status = status.HTTP_500_INTERNAL_SERVER_ERROR
     
+    if not request.user.is_staff:
+            return Response(
+                {"error": "You do not have permission to perform this action."},
+                status=status.HTTP_403_FORBIDDEN
+            )
     self.check_permissions(request)
+            
     make_uuid = self.kwargs.get('make_uuid')
 
     
