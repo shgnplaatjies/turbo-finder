@@ -19,15 +19,19 @@ export interface VehiclesContextState {
   models: VehicleModel[];
   years: number[];
   units: DistanceUnit[];
-  selectedModel: string;
-  selectedYear: string;
-  selectedUnit: string;
+
+  viewableModels: VehicleModel[];
+  viewableYears: number[];
+
+  selectedModel: VehicleModel | undefined;
+  selectedYear: number | undefined;
+  selectedUnit: DistanceUnit | undefined;
 }
 
 export interface VehiclesContextActions {
-  updateSelectedModel: Dispatch<SetStateAction<string>>;
-  updateSelectedYear: Dispatch<SetStateAction<string>>;
-  updateSelectedUnit: Dispatch<SetStateAction<string>>;
+  updateSelectedModel: Dispatch<SetStateAction<VehicleModel | undefined>>;
+  updateSelectedYear: Dispatch<SetStateAction<number | undefined>>;
+  updateSelectedUnit: Dispatch<SetStateAction<DistanceUnit | undefined>>;
 }
 
 export interface VehiclesContextValue

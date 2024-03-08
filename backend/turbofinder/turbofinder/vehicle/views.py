@@ -31,7 +31,6 @@ class VehicleModelCreateView(generics.ListCreateAPIView):
   permission_classes = [permissions.IsAuthenticated]
   serializer_class = VehicleModelSerializer
   authentication_classes = [TokenAuthentication]
-  throttle_classes = [UserRateThrottle]
   
   def get_offset_limit(self, request):
       try:
