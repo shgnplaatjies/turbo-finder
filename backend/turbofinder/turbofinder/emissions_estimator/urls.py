@@ -6,7 +6,8 @@ from .views import (
     EmissionEstimateCreateView,
     ViewableEmissionEstimatesListCreateView,
     ViewableEmissionEstimatesRetrieveDestroyView,
-    UserListCreditsView
+    UserListCreditsView,
+    AllViewableEmissionEstimates
 )
 
 urlpatterns = [
@@ -17,4 +18,5 @@ urlpatterns = [
     path('emission-estimate/', EmissionEstimateCreateView.as_view(), name='emission-estimate-create'),
     path('viewable-emission-estimates/', ViewableEmissionEstimatesListCreateView.as_view(), name='viewable-emission-estimates-list-create'),
     path('viewable-emission-estimates/<int:pk>/', ViewableEmissionEstimatesRetrieveDestroyView.as_view(), name='viewable-emission-estimates-retrieve-destroy'),
+    path('viewable-emission-estimates/all/', AllViewableEmissionEstimates.as_view(), name='all-viewable-emission-estimates'),
 ]

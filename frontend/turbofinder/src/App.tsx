@@ -4,23 +4,26 @@ import LoginPage from "./pages/LoginPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import RegisterPage from "./pages/RegisterPage";
 import { VehiclesProvider } from "./services/context_providers/VehiclesContextProvider";
+import { ViewableEstimatesProvider } from "./services/context_providers/ViewableEstimatesProvider";
 import { useAuth } from "./services/hooks/auth.hook";
 
 const App = () => {
   const isAuthenticated = useAuth();
   return (
     <VehiclesProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route
-            path="/"
-            element={isAuthenticated ? <DashboardPage /> : <LoginPage />}
-          />
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
-      </BrowserRouter>
+      <ViewableEstimatesProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route
+              path="/"
+              element={isAuthenticated ? <DashboardPage /> : <LoginPage />}
+            />
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        </BrowserRouter>
+      </ViewableEstimatesProvider>
     </VehiclesProvider>
   );
 };

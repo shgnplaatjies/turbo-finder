@@ -13,6 +13,7 @@ export const GLOBAL_URLS = {
   emissionsEstimateGeneral: "api/emission-estimate/",
   viewableEmissionsEstimateGeneral: "api/viewable-emission-estimates/",
   viewableEmissionsEstimateRetrieve: "api/viewable-emission-estimates/:pk/",
+  viewableEmissionsEstimateAll: "api/viewable-emission-estimates/all/",
 };
 
 export const TOYOTA_UUID = "2b1d0cd5-59be-4010-83b3-b60c5e5342da";

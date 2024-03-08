@@ -3,7 +3,7 @@ from rest_framework import generics, status, permissions
 from rest_framework.throttling import UserRateThrottle
 from rest_framework.response import Response
 from .models import DistanceUnit, EmissionEstimate, ViewableEmissionEstimates, TurboFinderUser, VehicleModel
-from .serializers import DistanceUnitSerializer, EmissionEstimateSerializer, ViewableEmissionEstimatesSerializer, TurboFinderUserSerializer
+from .serializers import DistanceUnitSerializer, EmissionEstimateSerializer, ViewableEmissionEstimatesSerializer, TurboFinderUserSerializer, SimplifiedViewableEmissionEstimatesSerializer
 import requests
 from decouple import config
 from datetime import datetime, timedelta, timezone
@@ -203,3 +203,11 @@ class ViewableEmissionEstimatesRetrieveDestroyView(generics.RetrieveDestroyAPIVi
         instance.delete()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+
+class AllViewableEmissionEstimates(generics.ListAPIView):
+    queryset = ViewableEmissionEstimates.objects.all()
+    serializer_class = SimplifiedViewableEmissionEstimatesSerializer
+    permission_classes = [permissions.IsAuthenticated]
+

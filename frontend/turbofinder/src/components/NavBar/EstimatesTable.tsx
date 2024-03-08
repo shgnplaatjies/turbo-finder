@@ -1,9 +1,12 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+// src/components/EstimatesTable.tsx
 import React from "react";
+import { useViewableEstimatesContext } from "../../services/hooks/ViewableEstimates.hook";
 
 const EstimatesTable: React.FC = () => {
+  const { viewableEstimates } = useViewableEstimatesContext();
+
   return (
-    <table className="estimates-table">
+    <table className="viewableEstimates-table">
       <thead>
         <tr>
           <th>Model</th>
@@ -12,22 +15,24 @@ const EstimatesTable: React.FC = () => {
         </tr>
       </thead>
       <tbody>
-        {/* {modelsList.map((item) => (
+        {viewableEstimates.map((item) => (
           <tr key={item.id}>
-            <td>item.model.name</td>
-            <td>item.model.year</td>
+            <td>{item.emissions_estimate.model.name}</td>
             <td>
-              item.viewableEstimate ??{" "}
-              <button type="button" id="createNewEstimate">
-                Estimate | 5Cr
-              </button>{" "}
-              ??{" "}
-              <button type="button" id="createViewableEstimate">
-                Unlock | 3Cr
-              </button>
+              {new Date(item.emissions_estimate.model.year).getFullYear()}
+            </td>
+            <td>
+              {item.emissions_estimate.carbon_grams !== undefined &&
+              item.emissions_estimate.distance_scale !== undefined ? (
+                <>{item.emissions_estimate.carbon_grams} </>
+              ) : (
+                <button type="button" id="createViewableEstimate">
+                  Unlock | 3Cr
+                </button>
+              )}
             </td>
           </tr>
-        ))} */}
+        ))}
       </tbody>
     </table>
   );
