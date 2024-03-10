@@ -16,6 +16,8 @@ export interface DistanceUnit {
 }
 
 export interface VehiclesContextState {
+  offset: number;
+
   models: VehicleModel[];
   years: number[];
   units: DistanceUnit[];
@@ -32,6 +34,7 @@ export interface VehiclesContextActions {
   updateSelectedModel: Dispatch<SetStateAction<VehicleModel | undefined>>;
   updateSelectedYear: Dispatch<SetStateAction<number | undefined>>;
   updateSelectedUnit: Dispatch<SetStateAction<DistanceUnit | undefined>>;
+  updateOffset: Dispatch<SetStateAction<number | undefined>>;
 }
 
 export interface VehiclesContextValue

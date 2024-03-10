@@ -28,8 +28,9 @@ class EmissionEstimate(models.Model):
 
 class ViewableEmissionEstimates(models.Model):
   emissions_estimate = models.ForeignKey(EmissionEstimate, on_delete=models.CASCADE)
-  user_id = models.ForeignKey(TurboFinderUser, on_delete=models.CASCADE)
+  user = models.ForeignKey(TurboFinderUser, on_delete=models.CASCADE)
+  class Meta:
+      unique_together = ('user', 'emissions_estimate')
 
-  
   def __str__(self):
-    return f"{self.emissions_estimate.model.make.name} {self.emissions_estimate.model.name} {self.emissions_estimate.model.year.year} - User: {self.user_id.username}"
+    return f"{self.emissions_estimate.model.make.name} {self.emissions_estimate.model.name} {self.emissions_estimate.model.year.year} - User: {self.user.username}"

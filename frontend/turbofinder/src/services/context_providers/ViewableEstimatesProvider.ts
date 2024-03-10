@@ -23,6 +23,7 @@ export const ViewableEstimatesProvider: React.FC<
     const fetchViewableEstimates = async () => {
       try {
         const turboApi = getTurboApi();
+
         const response = await turboApi.get(
           GLOBAL_URLS.viewableEmissionsEstimateAll
         );

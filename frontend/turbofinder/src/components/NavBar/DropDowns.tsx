@@ -4,6 +4,7 @@ import {
   VehicleModel,
 } from "../../services/contexts/VehiclesContext";
 import { useVehiclesContext } from "../../services/hooks/Vehicle.hook";
+import AddEstimation from "./AddEstimate";
 
 interface Option {
   value: string;
@@ -64,11 +65,12 @@ const DropDowns: React.FC = () => {
     );
     updateSelectedUnit(selectedUnit);
   };
+
   return (
-    <div className="drop-downs">
+    <form className="drop-downs">
       <label>
-        Select a Model:
-        <select value={selectedModel?.uuid || ""} onChange={handleModelChange}>
+        Select a Model:{/**/}
+        <select value={selectedModel?.uuid ?? ""} onChange={handleModelChange}>
           {modelOptions.map((option) => (
             <option key={option.value} value={option.value}>
               {option.label}
@@ -78,9 +80,9 @@ const DropDowns: React.FC = () => {
       </label>
 
       <label>
-        Select a Year:
+        Select a Year:{/**/}
         <select
-          value={selectedYear?.toString() || ""}
+          value={selectedYear?.toString() ?? ""}
           onChange={handleYearChange}
         >
           {yearOptions.map((option) => (
@@ -92,8 +94,8 @@ const DropDowns: React.FC = () => {
       </label>
 
       <label>
-        Distance Unit:
-        <select value={selectedUnit?.symbol || ""} onChange={handleUnitChange}>
+        Distance Unit:{/**/}
+        <select value={selectedUnit?.symbol ?? ""} onChange={handleUnitChange}>
           {unitOptions.map((option) => (
             <option key={option.value} value={option.value}>
               {option.label}
@@ -101,7 +103,8 @@ const DropDowns: React.FC = () => {
           ))}
         </select>
       </label>
-    </div>
+      <AddEstimation />
+    </form>
   );
 };
 

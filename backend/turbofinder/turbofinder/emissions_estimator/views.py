@@ -10,9 +10,11 @@ from datetime import datetime, timedelta, timezone
 from rest_framework.authentication import TokenAuthentication
 from django.middleware.csrf import get_token
 from django.views.decorators.csrf import csrf_exempt
-
 from django.utils.decorators import method_decorator
 from rest_framework.views import APIView
+from django.db import IntegrityError
+from django.db.models import Max
+from django.db.models import F
 
 @method_decorator(csrf_exempt, name='dispatch')
 class CSRFGeneratorView(generics.ListAPIView):
@@ -66,7 +68,7 @@ class UserAddCreditsView(generics.RetrieveUpdateAPIView):
     def get_queryset(self):
         if self.request.user.is_superuser:
             return TurboFinderUser.objects.all()
-        return TurboFinderUser.objects.filter(user_id=self.request.user)
+        return TurboFinderUser.objects.filter(user=self.request.user)
     
     def get(self, request, *args, **kwargs):
         user = self.request.user
@@ -165,7 +167,7 @@ class EmissionEstimateCreateView(generics.CreateAPIView):
         )
 
         
-        viewable_estimate = ViewableEmissionEstimates(emissions_estimate=emission_estimate, user_id=user)
+        viewable_estimate = ViewableEmissionEstimates(emissions_estimate=emission_estimate, user=user)
         viewable_estimate.save()
 
         serializer = self.get_serializer(emission_estimate)
@@ -177,31 +179,89 @@ class ViewableEmissionEstimatesListCreateView(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [TokenAuthentication]
     
-    def get_queryset(self):
-        if self.request.user.is_superuser:
-            return ViewableEmissionEstimates.objects.all()
-        return ViewableEmissionEstimates.objects.filter(user_id=self.request.user)
-
-
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        emission_estimate_id = request.data.get('emissions_estimate', {}).get('id')
 
-        emission_estimate = EmissionEstimate.objects.get(pk=request.data.get('emission_estimate'))
-
-        credits_to_subtract = 3
-
-        if self.request.user.credits >= credits_to_subtract:
-            self.request.user.credits -= credits_to_subtract
-            self.request.user.save()
-            serializer.save(user=self.request.user, emission_estimate=emission_estimate)
-
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
+        if not emission_estimate_id:
             return Response(
-                {"error": "Insufficient credits."},
+                {"error": "emissions_estimate.id field is required."},
                 status=status.HTTP_400_BAD_REQUEST
             )
+
+        try:
+            emissions_estimate = EmissionEstimate.objects.get(pk=emission_estimate_id)
+        except EmissionEstimate.DoesNotExist:
+            return Response(
+                {"error": f"Emission Estimate with ID {emission_estimate_id} does not exist."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        user_id = request.data.get('user', {}).get('id', None)
+
+        if user_id is not None:
+            try:
+                user = TurboFinderUser.objects.get(pk=user_id)
+            except TurboFinderUser.DoesNotExist:
+                return Response(
+                    {"error": f"User with ID {user_id} does not exist."},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+        else:
+            user = self.request.user
+
+
+        credits_to_subtract = 3
+        if user.credits <= credits_to_subtract:
+            return Response(
+                {"error": f"Insufficient credits. Required: {credits_to_subtract}, Available: {user.credits}"},
+                status=status.HTTP_402_PAYMENT_REQUIRED
+            )
+
+
+        existing_viewable_estimate = ViewableEmissionEstimates.objects.filter(user=user, emissions_estimate=emissions_estimate).first()
+
+        if existing_viewable_estimate:
+            return Response(
+                {'error': 'You already have access to this estimate.'},
+                status=status.HTTP_409_CONFLICT
+            )
+
+        viewable_estimate = ViewableEmissionEstimates.objects.create(
+            emissions_estimate=emissions_estimate,
+            user=user
+        )
+
+        user.credits -= credits_to_subtract
+        user.save()
+
+        serializer = self.get_serializer(viewable_estimate)
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class AllViewableEmissionEstimates(generics.ListAPIView):
+    queryset = ViewableEmissionEstimates.objects.all()
+    serializer_class = SimplifiedViewableEmissionEstimatesSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get_queryset(self):
+        current_user = self.request.user
+
+        unique_estimates = {}
+        for viewable_estimate in ViewableEmissionEstimates.objects.all():
+            emission_estimate = viewable_estimate.emissions_estimate
+            key = emission_estimate.id
+
+            if (
+                viewable_estimate.user == current_user
+                or key not in unique_estimates
+                or viewable_estimate.id > unique_estimates[key].id
+            ):
+                unique_estimates[key] = viewable_estimate
+
+        return unique_estimates.values()
+
+
 
 class ViewableEmissionEstimatesRetrieveDestroyView(generics.RetrieveDestroyAPIView):
     queryset = ViewableEmissionEstimates.objects.all()
@@ -217,11 +277,3 @@ class ViewableEmissionEstimatesRetrieveDestroyView(generics.RetrieveDestroyAPIVi
         instance.delete()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-
-class AllViewableEmissionEstimates(generics.ListAPIView):
-    queryset = ViewableEmissionEstimates.objects.all()
-    serializer_class = SimplifiedViewableEmissionEstimatesSerializer
-    permission_classes = [permissions.IsAuthenticated]
-

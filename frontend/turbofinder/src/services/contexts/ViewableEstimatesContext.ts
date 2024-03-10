@@ -16,11 +16,12 @@ export interface ViewableEstimate {
       year: string;
     };
     estimated_at: string;
+    estimated_by: number;
     carbon_grams?: string;
     distance_scale?: string;
     unit_id: number;
   };
-  user_id: number;
+  user: { id: number };
 }
 
 export interface ViewableEstimatesContextValue {

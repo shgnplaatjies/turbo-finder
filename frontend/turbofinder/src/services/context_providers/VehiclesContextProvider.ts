@@ -8,7 +8,7 @@ import {
   VehiclesContextActions,
   VehiclesContextValue,
 } from "../contexts/VehiclesContext";
-import { GLOBAL_URLS } from "../global/urls";
+import { GLOBAL_URLS, TOYOTA_UUID } from "../global/urls";
 import { handleErrors } from "../handleErrors";
 
 interface VehiclesProviderProps {
@@ -18,6 +18,9 @@ interface VehiclesProviderProps {
 export const VehiclesProvider: React.FC<VehiclesProviderProps> = ({
   children,
 }) => {
+  const offsetStep = 100;
+  const [offset, setOffset] = useState<number>(0);
+
   const [models, setModels] = useState<VehicleModel[]>([]);
   const [years, setYears] = useState<number[]>([]);
   const [units, setUnits] = useState<DistanceUnit[]>([]);
@@ -37,63 +40,73 @@ export const VehiclesProvider: React.FC<VehiclesProviderProps> = ({
 
   useEffect(() => {
     const fetchData = async () => {
-      if (models.length === 0)
-        try {
-          const turboApi = getTurboApi();
+      try {
+        const turboApi = getTurboApi();
 
-          const vehicleModelsResponse = await turboApi.get(
-            "/api/vehicle-make/2b1d0cd5-59be-4010-83b3-b60c5e5342da/models/",
-            {
-              data: {
-                limit: 100, //below 200 limit
-              },
-            }
-          );
+        const vehicleModelsResponse = await turboApi.get(
+          `/api/vehicle-make/${TOYOTA_UUID}/models/`,
+          { data: { limit: offsetStep, offset: offset } }
+        );
 
-          const unitsResponse = await turboApi.get(
-            GLOBAL_URLS.distanceUnitsGeneral
-          );
+        const unitsResponse = await turboApi.get(
+          GLOBAL_URLS.distanceUnitsGeneral
+        );
 
-          const modelsData: VehicleModel[] = vehicleModelsResponse.data;
-          const unitsData: DistanceUnit[] = unitsResponse.data;
+        const modelsData: VehicleModel[] = vehicleModelsResponse.data;
+        const unitsData: DistanceUnit[] = unitsResponse.data;
 
-          const uniqueYears = [
-            ...new Set(
-              modelsData.map((model) => new Date(model.year).getFullYear())
-            ),
-          ];
+        const uniqueYears = [
+          ...new Set(
+            modelsData.map((model) => new Date(model.year).getFullYear())
+          ),
+        ];
 
-          setModels(modelsData);
-          setYears(uniqueYears);
-          setUnits(unitsData);
+        setModels(modelsData);
+        setYears(uniqueYears);
+        setUnits(unitsData);
 
-          setViewableModels(modelsData);
-          setViewableYears(uniqueYears);
-        } catch (error) {
-          handleErrors(
-            error,
-            "Something went wrong with VehicleContextProvider"
-          );
-        }
+        setViewableModels(modelsData);
+        setViewableYears(uniqueYears);
+      } catch (error) {
+        handleErrors(error, "Something went wrong with VehicleContextProvider");
+      }
     };
 
     fetchData();
-  }, [models, years, units]);
+  }, [offset]);
+
+  const updateOffset: VehiclesContextActions["updateOffset"] = (multiple) => {
+    if (!multiple) return setOffset(0);
+
+    if (typeof multiple !== "number")
+      throw new Error(
+        "Update selected multiple only accepts numbers, not callback functions."
+      );
+
+    if (multiple <= 0) return setOffset(0);
+
+    setOffset(multiple);
+  };
 
   const updateSelectedModel: VehiclesContextActions["updateSelectedModel"] = (
     model
   ) => {
+    if (!model) return setSelectedModel(undefined);
+
     setSelectedModel(model);
-    if (model) filterViewableYears(model.name);
+    filterViewableYears(model.name);
   };
 
   const updateSelectedYear: VehiclesContextActions["updateSelectedYear"] = (
     year
   ) => {
+    if (!year) return setSelectedYear(undefined);
+
     if (typeof year !== "number")
       throw new Error(
         "Update selected year only accepts numbers, not callback functions."
       );
+
     setSelectedYear(year);
     filterViewableModels(year);
   };
@@ -101,6 +114,8 @@ export const VehiclesProvider: React.FC<VehiclesProviderProps> = ({
   const updateSelectedUnit: VehiclesContextActions["updateSelectedUnit"] = (
     unit
   ) => {
+    if (!unit) return setSelectedUnit(undefined);
+
     setSelectedUnit(unit);
   };
 
@@ -140,6 +155,8 @@ export const VehiclesProvider: React.FC<VehiclesProviderProps> = ({
     updateSelectedModel,
     updateSelectedYear,
     updateSelectedUnit,
+    offset,
+    updateOffset,
   };
 
   return createElement(
