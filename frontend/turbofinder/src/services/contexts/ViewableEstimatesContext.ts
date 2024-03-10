@@ -26,6 +26,7 @@ export interface ViewableEstimate {
 
 export interface ViewableEstimatesContextValue {
   viewableEstimates: ViewableEstimate[];
+  refreshContext: () => void;
 }
 
 export const ViewableEstimatesContext = createContext<

@@ -18,29 +18,35 @@ export const ViewableEstimatesProvider: React.FC<
   const [viewableEstimates, setViewableEstimates] = useState<
     ViewableEstimate[]
   >([]);
+  const [refresh, setRefresh] = useState(false);
+
+  const fetchViewableEstimates = async () => {
+    try {
+      const turboApi = getTurboApi();
+
+      const response = await turboApi.get(
+        GLOBAL_URLS.viewableEmissionsEstimateAll
+      );
+
+      if (response.status === 200) {
+        setViewableEstimates(response.data);
+      }
+    } catch (error) {
+      handleErrors(error, "Error fetching Viewable ViewableEstimates");
+    }
+  };
+
+  const refreshContext = () => {
+    setRefresh((prev) => !prev);
+  };
 
   useEffect(() => {
-    const fetchViewableEstimates = async () => {
-      try {
-        const turboApi = getTurboApi();
-
-        const response = await turboApi.get(
-          GLOBAL_URLS.viewableEmissionsEstimateAll
-        );
-
-        if (response.status === 200) {
-          setViewableEstimates(response.data);
-        }
-      } catch (error) {
-        handleErrors(error, "Error fetching Viewable ViewableEstimates");
-      }
-    };
-
     fetchViewableEstimates();
-  }, []);
+  }, [refresh]);
 
   const contextValue: ViewableEstimatesContextValue = {
     viewableEstimates,
+    refreshContext,
   };
 
   return createElement(
