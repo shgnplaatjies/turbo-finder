@@ -4,21 +4,53 @@ from vehicle.serializers import VehicleModelSerializer
 
 
 class TurboFinderUserInfoSerializer(serializers.ModelSerializer):
+    """
+    Serializer class for the TurboFinderUser model, including additional information.
+
+    Attributes:
+        Meta (Meta): Meta class for defining the model and fields for serialization.
+    """
     class Meta:
+        """
+        Meta class for defining the model and fields for serialization.
+        """
         model = TurboFinderUser
         fields = ['id', 'username', 'email', 'first_name', 'last_name', 'credits']
 
 class TurboFinderUserSerializer(serializers.ModelSerializer):
+    """
+    Serializer class for the TurboFinderUser model, specifically for credits.
+
+    Attributes:
+        Meta (Meta): Meta class for defining the model and fields for serialization.
+    """
     class Meta:
+        """
+        Meta class for defining the model and fields for serialization.
+        """
+
         model = TurboFinderUser
         fields = ['credits']
+
 class EmissionEstimateSerializer(serializers.ModelSerializer):
+    """
+    Serializer class for the EmissionEstimate model.
+
+    Attributes:
+        model (VehicleModelSerializer): Serializer for the associated vehicle model.
+    """
     model = VehicleModelSerializer()
     class Meta:
         model = EmissionEstimate
         fields = '__all__'
 
 class ViewableEmissionEstimatesSerializer(serializers.ModelSerializer):
+    """
+    Serializer class for the ViewableEmissionEstimates model.
+
+    Attributes:
+        emissions_estimate (EmissionEstimateSerializer): Serializer for the associated emission estimate.
+    """
     emissions_estimate = EmissionEstimateSerializer()
     class Meta:
         model = ViewableEmissionEstimates
@@ -34,6 +66,9 @@ class ViewableEmissionEstimatesSerializer(serializers.ModelSerializer):
 
 
 class SimplifiedViewableEmissionEstimatesSerializer(serializers.ModelSerializer):
+    """
+    Serializer class for simplified viewable emission estimates.
+    """
     class Meta:
         model = ViewableEmissionEstimates
         fields = [
@@ -86,7 +121,16 @@ class SimplifiedViewableEmissionEstimatesSerializer(serializers.ModelSerializer)
 
 
 class DistanceUnitSerializer(serializers.ModelSerializer):
+    """
+    Serializer class for the DistanceUnit model.
+
+    Attributes:
+        Meta (Meta): Meta class for defining the model and fields for serialization.
+    """
     class Meta:
+        """
+        Meta class for defining the model and fields for serialization.
+        """
         model = DistanceUnit
         fields = '__all__'
 

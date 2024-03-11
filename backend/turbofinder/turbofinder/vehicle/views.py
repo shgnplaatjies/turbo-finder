@@ -11,12 +11,32 @@ import requests
 from rest_framework.authentication import TokenAuthentication
 
 class VehicleMakeListCreateView(generics.ListCreateAPIView):
+  """
+  API View for listing and creating vehicle makes.
+
+  Attributes:
+      queryset (QuerySet): The queryset for retrieving vehicle makes.
+      serializer_class (Serializer): The serializer class for handling data serialization.
+      permission_classes (list): The list of permission classes required for this view.
+      authentication_classes (list): The list of authentication classes for this view.
+  """
   queryset = VehicleMake.objects.all()
   serializer_class = VehicleMakeSerializer
   permission_classes = [permissions.IsAuthenticated]
   authentication_classes = [TokenAuthentication]
   
   def create(self, request, *args, **kwargs):
+    """
+    Handles POST requests to create a new vehicle make.
+
+    Parameters:
+        request: The HTTP request object.
+
+    Returns:
+        Response: The HTTP response indicating the success or failure of the request.
+            - 201_CREATED: Successfully created a new vehicle make.
+                Example: {"status": "success", "message": "Vehicle make created successfully."}
+    """
     serializer = self.get_serializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     
@@ -28,11 +48,28 @@ class VehicleMakeListCreateView(generics.ListCreateAPIView):
     )
 
 class VehicleModelCreateView(generics.ListCreateAPIView):
+  """
+    API View for creating and listing vehicle models associated with a specific vehicle make.
+
+    Attributes:
+        serializer_class (Serializer): The serializer class for handling data serialization.
+        permission_classes (list): The list of permission classes required for this view.
+        authentication_classes (list): The list of authentication classes for this view.
+    """
   serializer_class = VehicleModelSerializer
   permission_classes = [permissions.IsAuthenticated]
   authentication_classes = [TokenAuthentication]
   
   def get_offset_limit(self, request):
+      """
+        Retrieves the offset and limit values from the request data.
+
+        Parameters:
+            request: The HTTP request object.
+
+        Returns:
+            tuple: A tuple containing offset and limit values.
+        """
       try:
           offset = int(request.data.get('offset', 0))
           limit = int(request.data.get('limit', 100))
@@ -42,16 +79,52 @@ class VehicleModelCreateView(generics.ListCreateAPIView):
       return offset, limit
 
   def get(self, request, *args, **kwargs):
+      """
+        Handles GET requests to retrieve a paginated list of vehicle models for a specific make.
+
+        Parameters:
+            request: The HTTP request object.
+
+        Returns:
+            Response: The HTTP response containing a paginated list of serialized vehicle models.
+        """
       offset, limit = self.get_offset_limit(request)
       queryset = self.get_queryset()[offset:offset+limit]
       serializer = self.get_serializer(queryset, many=True)
       return Response(serializer.data)
   
   def get_queryset(self):
+    """
+        Retrieves the queryset for filtering vehicle models based on the associated make's UUID.
+
+        Returns:
+            QuerySet: The queryset for vehicle models.
+        """
     uuid = self.kwargs.get('make_uuid')
     return VehicleModel.objects.filter(make__uuid = uuid)
   
   def create(self, request, *args, **kwargs):
+    """
+        Handles POST requests to create new vehicle models associated with a specific make.
+
+        Parameters:
+            request: The HTTP request object.
+
+        Returns:
+            Response: The HTTP response indicating the success or failure of the request.
+                - 201_CREATED: Successfully created new vehicle models.
+                    Example: {"status": "success", "message": "Vehicle models created successfully."}
+                - 206_PARTIAL_CONTENT: Some models were updated, and others were created.
+                    Example: {"status": "partial_success", "message": "Some models updated, some created."}
+                - 403_FORBIDDEN: User does not have permission to perform the action.
+                    Example: {"error": "You do not have permission to perform this action."}
+                - 404_NOT_FOUND: Vehicle make with the specified UUID does not exist.
+                    Example: {"error": "Vehicle Make with UUID:{make_uuid} does not exist."}
+                - 409_CONFLICT: Conflicts in the request, such as duplicate models or make already existing.
+                    Example: {"error": "This Make already exists in the database"}
+                - 424_FAILED_DEPENDENCY: Error fetching data from the external API.
+                    Example: {"Internal Error": "Error fetching data from external API."}
+        """
     response_status = status.HTTP_500_INTERNAL_SERVER_ERROR
     
     if not request.user.is_staff:

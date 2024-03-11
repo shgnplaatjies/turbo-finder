@@ -25,18 +25,51 @@ from django.db.models import F
 
 
 class DistanceUnitListCreateView(generics.ListCreateAPIView):
+    """
+    API View for listing and creating distance units.
+
+    Attributes:
+        queryset (QuerySet): The queryset for retrieving distance units.
+        serializer_class (Serializer): The serializer class for handling data serialization.
+        permission_classes (list): The list of permission classes required for this view.
+        authentication_classes (list): The list of authentication classes for this view.
+    """
+
     queryset = DistanceUnit.objects.all()
     serializer_class = DistanceUnitSerializer
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [TokenAuthentication]
 
 class DistanceUnitRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    """
+    API View for retrieving, updating, and deleting a specific distance unit.
+
+    Attributes:
+        queryset (QuerySet): The queryset for retrieving distance units.
+        serializer_class (Serializer): The serializer class for handling data serialization.
+        permission_classes (list): The list of permission classes required for this view.
+        authentication_classes (list): The list of authentication classes for this view.
+    """
     queryset = DistanceUnit.objects.all()
     serializer_class = DistanceUnitSerializer
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [TokenAuthentication]
 
     def destroy(self, request, *args, **kwargs):
+        """
+        Handles DELETE requests to delete a distance unit.
+
+        Parameters:
+            request: The HTTP request object.
+
+        Returns:
+            Response: The HTTP response indicating the success or failure of the request.
+                - 204_NO_CONTENT: Successfully deleted the distance unit.
+                    Example: {"status": "success", "message": "Distance unit deleted successfully."}
+                - 409_CONFLICT: Cannot delete distance unit with associated emission estimates.
+                    Example: {"error": "Cannot delete distance unit with associated emission estimates."}
+        """
+
         instance = self.get_object()
 
         if instance.emissionestimate_set.exists():
@@ -48,24 +81,64 @@ class DistanceUnitRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIVie
         return super().destroy(request, *args, **kwargs)
     
 class UserInfoListView(generics.ListAPIView):
+    """
+    API View for listing user information.
+
+    Attributes:
+        queryset (QuerySet): The queryset for retrieving user information.
+        serializer_class (Serializer): The serializer class for handling data serialization.
+        permission_classes (list): The list of permission classes required for this view.
+        authentication_classes (list): The list of authentication classes for this view.
+    """
     queryset = TurboFinderUser.objects.all()
     serializer_class = TurboFinderUserInfoSerializer
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [TokenAuthentication]
 
     def get_queryset(self):
+        """
+        Retrieves the queryset for listing user information based on the current user.
+
+        Returns:
+            QuerySet: The queryset for user information.
+        """
         return TurboFinderUser.objects.filter(username=self.request.user.username)
 
 class UserListCreditsView(generics.ListAPIView):
+    """
+    API View for listing user credits.
+
+    Attributes:
+        queryset (QuerySet): The queryset for retrieving user credits.
+        serializer_class (Serializer): The serializer class for handling data serialization.
+        permission_classes (list): The list of permission classes required for this view.
+        authentication_classes (list): The list of authentication classes for this view.
+    """
     queryset = TurboFinderUser.objects.all()
     serializer_class = TurboFinderUserSerializer
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [TokenAuthentication]
 
     def get_queryset(self):
+        """
+        Retrieves the queryset for listing user credits based on the current user.
+
+        Returns:
+            QuerySet: The queryset for user credits.
+        """
         return TurboFinderUser.objects.filter(username=self.request.user.username)
 
 class UserAddCreditsView(generics.RetrieveUpdateAPIView):
+    """
+    API View for retrieving and updating user credits.
+
+    Attributes:
+        queryset (QuerySet): The queryset for retrieving user credits.
+        serializer_class (Serializer): The serializer class for handling data serialization.
+        permission_classes (list): The list of permission classes required for this view.
+        authentication_classes (list): The list of authentication classes for this view.
+        throttle_classes (list): The list of throttle classes for controlling the rate of requests.
+    """
     queryset = TurboFinderUser.objects.all()
     serializer_class = TurboFinderUserSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -74,11 +147,26 @@ class UserAddCreditsView(generics.RetrieveUpdateAPIView):
     throttle_classes = [UserRateThrottle]
     
     def get_queryset(self):
+        """
+        Retrieves the queryset for retrieving user credits based on the current user.
+
+        Returns:
+            QuerySet: The queryset for user credits.
+        """
         if self.request.user.is_superuser:
             return TurboFinderUser.objects.all()
         return TurboFinderUser.objects.filter(user=self.request.user)
     
     def get(self, request, *args, **kwargs):
+        """
+        Handles GET requests to retrieve user credits.
+
+        Parameters:
+            request: The HTTP request object.
+
+        Returns:
+            Response: The HTTP response containing the user's credits.
+        """
         user = self.request.user
         serializer = self.get_serializer(user)
         
@@ -87,6 +175,15 @@ class UserAddCreditsView(generics.RetrieveUpdateAPIView):
         return response
 
     def patch(self, request, *args, **kwargs):
+        """
+        Handles PATCH requests to add credits to the user.
+
+        Parameters:
+            request: The HTTP request object.
+
+        Returns:
+            Response: The HTTP response containing the updated user's credits.
+        """
         user = self.request.user
         credits_to_add = 5
 
@@ -96,6 +193,25 @@ class UserAddCreditsView(generics.RetrieveUpdateAPIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class EmissionEstimateCreateView(generics.CreateAPIView):
+    """
+    API View for creating emission estimates.
+
+    Attributes:
+        - queryset (QuerySet): All existing emission estimates.
+        - serializer_class (Serializer): Serializer for the EmissionEstimate model.
+        - permission_classes (list): List of permission classes required for this view.
+        - authentication_classes (list): List of authentication classes for this view.
+        - throttle_classes (list): List of throttle classes for controlling request rate.
+
+    Methods:
+    - create(request, *args, **kwargs): Handles POST requests to create emission estimates.
+        Returns:
+            - HTTP 201 Created: Successfully created a new emission estimate.
+            - HTTP 304 Not Modified: Returns existing estimate if requested within the last 12 hours.
+            - HTTP 402 Payment Required: Insufficient credits to create an estimate.
+            - HTTP 404 Not Found: Invalid model UUID or DistanceUnit not found.
+            - HTTP 500 Internal Server Error: Error reaching the external API.
+    """
     queryset = EmissionEstimate.objects.all()
     serializer_class = EmissionEstimateSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -104,6 +220,24 @@ class EmissionEstimateCreateView(generics.CreateAPIView):
     throttle_classes = [UserRateThrottle]
 
     def create(self, request, *args, **kwargs):
+        """
+        API View for listing and creating viewable emission estimates.
+
+        Attributes:
+            queryset (QuerySet): The queryset for retrieving viewable emission estimates.
+            serializer_class (Serializer): The serializer class for handling data serialization.
+            permission_classes (list): The list of permission classes required for this view.
+            authentication_classes (list): The list of authentication classes for this view.
+
+        Methods:
+            - create(request, *args, **kwargs): Handles POST requests to create viewable emission estimates.
+                Returns:
+                    - HTTP 201 Created: Successfully created a new viewable emission estimate.
+                    - HTTP 400 Bad Request: Missing or invalid 'emissions_estimate.id' field.
+                    - HTTP 402 Payment Required: Insufficient credits to create a viewable estimate.
+                    - HTTP 404 Not Found: Emission Estimate with the specified ID does not exist.
+                    - HTTP 409 Conflict: User already has access to the specified estimate.
+        """
         self.check_permissions(request)
 
         user = self.request.user
@@ -182,6 +316,24 @@ class EmissionEstimateCreateView(generics.CreateAPIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 class ViewableEmissionEstimatesListCreateView(generics.ListCreateAPIView):
+    """
+    API View for listing and creating viewable emission estimates.
+
+    Attributes:
+        queryset (QuerySet): The queryset for retrieving viewable emission estimates.
+        serializer_class (Serializer): The serializer class for handling data serialization.
+        permission_classes (list): The list of permission classes required for this view.
+        authentication_classes (list): The list of authentication classes for this view.
+
+    Methods:
+        - create(request, *args, **kwargs): Handles POST requests to create viewable emission estimates.
+            Returns:
+                - HTTP 201 Created: Successfully created a new viewable emission estimate.
+                - HTTP 400 Bad Request: Missing or invalid 'emissions_estimate.id' field.
+                - HTTP 402 Payment Required: Insufficient credits to create a viewable estimate.
+                - HTTP 404 Not Found: Emission Estimate with the specified ID does not exist.
+                - HTTP 409 Conflict: User already has access to the specified estimate.
+    """
     queryset = ViewableEmissionEstimates.objects.all()
     serializer_class = ViewableEmissionEstimatesSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -247,6 +399,20 @@ class ViewableEmissionEstimatesListCreateView(generics.ListCreateAPIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 class AllViewableEmissionEstimates(generics.ListAPIView):
+    """
+    API View for listing all viewable emission estimates.
+
+    Attributes:
+        queryset (QuerySet): The queryset for retrieving all viewable emission estimates.
+        serializer_class (Serializer): The serializer class for handling data serialization.
+        permission_classes (list): The list of permission classes required for this view.
+        authentication_classes (list): The list of authentication classes for this view.
+
+    Methods:
+        - get_queryset(): Retrieves a list of all unique viewable emission estimates for the current user.
+            Returns:
+                - QuerySet: List of unique viewable emission estimates.
+    """
     queryset = ViewableEmissionEstimates.objects.all()
     serializer_class = SimplifiedViewableEmissionEstimatesSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -273,6 +439,21 @@ class AllViewableEmissionEstimates(generics.ListAPIView):
         return unique_estimates.values()
 
 class ViewableEmissionEstimatesRetrieveDestroyView(generics.RetrieveDestroyAPIView):
+    """
+    API View for retrieving and deleting viewable emission estimates.
+
+    Attributes:
+        queryset (QuerySet): The queryset for retrieving and deleting viewable emission estimates.
+        serializer_class (Serializer): The serializer class for handling data serialization.
+        permission_classes (list): The list of permission classes required for this view.
+        authentication_classes (list): The list of authentication classes for this view.
+
+    Methods:
+        - destroy(request, *args, **kwargs): Handles DELETE requests to remove a viewable emission estimate.
+            Returns:
+                - HTTP 204 No Content: Successfully deleted the specified viewable emission estimate.
+                - HTTP 404 Not Found: Viewable Emission Estimate with the specified ID does not exist.
+    """
     queryset = ViewableEmissionEstimates.objects.all()
     serializer_class = ViewableEmissionEstimatesSerializer
     permission_classes = [permissions.IsAuthenticated]
