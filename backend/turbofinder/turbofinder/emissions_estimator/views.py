@@ -16,12 +16,12 @@ from django.db import IntegrityError
 from django.db.models import Max
 from django.db.models import F
 
-@method_decorator(csrf_exempt, name='dispatch')
-class CSRFGeneratorView(generics.ListAPIView):
+# @method_decorator(csrf_exempt, name='dispatch')
+# class CSRFGeneratorView(generics.ListAPIView):
 
-    def get(self, request, *args, **kwargs):
-        csrf_token = get_token(request)
-        return Response({'csrf_token': csrf_token})
+#     def get(self, request, *args, **kwargs):
+#         csrf_token = get_token(request)
+#         return Response({'csrf_token': csrf_token})
 
 
 class DistanceUnitListCreateView(generics.ListCreateAPIView):

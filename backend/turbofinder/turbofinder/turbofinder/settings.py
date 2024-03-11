@@ -46,7 +46,9 @@ INSTALLED_APPS = [
     'dj_rest_auth',
     'allauth',
     'allauth.account',
+    'drf_yasg',
     'corsheaders',
+    'react_app',
 ]
 
 MIDDLEWARE = [
