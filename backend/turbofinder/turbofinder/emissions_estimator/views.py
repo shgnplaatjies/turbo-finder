@@ -109,6 +109,7 @@ class EmissionEstimateCreateView(generics.CreateAPIView):
         user = self.request.user
         vehicle_uuid = request.data.get('uuid')
         distance_unit = 'km'
+        distance_value = 100
 
         recent_estimate = EmissionEstimate.objects.filter(model__uuid=vehicle_uuid, estimated_at__gte=datetime.now(timezone.utc) - timedelta(hours=12)).first()
         
@@ -125,7 +126,6 @@ class EmissionEstimateCreateView(generics.CreateAPIView):
         if not vehicle_model:
             return Response({"error":"Invalid model UUID"}, status=status.HTTP_404_NOT_FOUND)
 
-        distance_value = 100
         carbon_api_url = config('CARBON_INTERFACE_API_V1')+'/estimates'
         api_headers = {
             "Authorization": f"Bearer {config('CARBON_INTERFACE_API_KEY')}",

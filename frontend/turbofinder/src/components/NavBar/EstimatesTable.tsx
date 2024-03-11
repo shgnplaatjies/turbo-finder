@@ -4,12 +4,19 @@ import { getTurboApi } from "../../services/api";
 import { ViewableEstimate } from "../../services/contexts/ViewableEstimatesContext";
 import { GLOBAL_URLS } from "../../services/global/urls";
 import { handleErrors } from "../../services/handleErrors";
+import { useVehiclesContext } from "../../services/hooks/Vehicle.hook";
 import { useViewableEstimatesContext } from "../../services/hooks/ViewableEstimates.hook";
+import {
+  gramsToOunces,
+  kilometersToMiles,
+} from "../../services/utils/unitConversion";
 import UnlockModal from "./UnlockModal";
 
 const EstimatesTable: React.FC = () => {
   const { viewableEstimates } = useViewableEstimatesContext();
-  console.log(viewableEstimates);
+  const { selectedUnit } = useVehiclesContext();
+  const isMetric = selectedUnit?.symbol === "km";
+  const defaultDistanceScale = 100;
 
   const [isUnlockModalOpen, setIsUnlockModalOpen] = useState(false);
   const [modalText, setModalText] = useState("Processing...");
@@ -59,9 +66,7 @@ const EstimatesTable: React.FC = () => {
     }
   };
 
-  const closeUnlockModal = () => {
-    setIsUnlockModalOpen(false);
-  };
+  const closeUnlockModal = () => setIsUnlockModalOpen(false);
 
   return (
     <div>
@@ -70,7 +75,10 @@ const EstimatesTable: React.FC = () => {
           <tr>
             <th>Model</th>
             <th>Year</th>
-            <th>Emissions</th>
+            <th>Emissions {isMetric ? "g" : "oz"}</th>
+            <th>
+              Distance {isMetric ? `/~${defaultDistanceScale}km` : `/~${62}mi`}
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -80,20 +88,42 @@ const EstimatesTable: React.FC = () => {
               <td>
                 {new Date(item.emissions_estimate.model.year).getFullYear()}
               </td>
-              <td>
-                {item.emissions_estimate.carbon_grams !== undefined &&
-                item.emissions_estimate.distance_scale !== undefined ? (
-                  <>{item.emissions_estimate.carbon_grams} </>
-                ) : (
-                  <button
-                    type="button"
-                    id="createViewableEstimate"
-                    onClick={() => addViewableEstimate(item)}
-                  >
-                    Unlock | 3Cr
-                  </button>
-                )}
-              </td>
+              {item.emissions_estimate.carbon_grams !== undefined &&
+              item.emissions_estimate.distance_scale !== undefined ? (
+                <>
+                  <td>
+                    {isMetric
+                      ? item.emissions_estimate.carbon_grams
+                      : gramsToOunces(
+                          +Number(
+                            item.emissions_estimate.distance_scale
+                          ).toFixed(2)
+                        )}{" "}
+                  </td>
+                  <td>
+                    {isMetric
+                      ? item.emissions_estimate.distance_scale
+                      : kilometersToMiles(
+                          +Number(
+                            item.emissions_estimate.distance_scale
+                          ).toFixed(2)
+                        )}{" "}
+                  </td>
+                </>
+              ) : (
+                <>
+                  <td>N/A</td>
+                  <td>
+                    <button
+                      type="button"
+                      id="createViewableEstimate"
+                      onClick={() => addViewableEstimate(item)}
+                    >
+                      Unlock | 3Cr
+                    </button>
+                  </td>
+                </>
+              )}
             </tr>
           ))}
         </tbody>

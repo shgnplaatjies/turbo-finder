@@ -7,6 +7,8 @@ import { handleErrors } from "../services/handleErrors";
 
 const RegisterPage: React.FC = () => {
   const usernameRef = useRef<HTMLInputElement>(null);
+  const firstNameRef = useRef<HTMLInputElement>(null);
+  const lastNameRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
   const password1Ref = useRef<HTMLInputElement>(null);
   const password2Ref = useRef<HTMLInputElement>(null);
@@ -19,6 +21,8 @@ const RegisterPage: React.FC = () => {
 
   const handleRegister = async () => {
     const username = usernameRef.current?.value;
+    const lastName = lastNameRef.current?.value;
+    const firstName = firstNameRef.current?.value;
     const email = emailRef.current?.value;
     const password1 = password1Ref.current?.value;
     const password2 = password2Ref.current?.value;
@@ -27,6 +31,8 @@ const RegisterPage: React.FC = () => {
       const response = await turboApi.post("register/", {
         email,
         username,
+        firstName,
+        lastName,
         password1,
         password2,
       });
@@ -59,28 +65,36 @@ const RegisterPage: React.FC = () => {
       <h2>Register</h2>
       <form>
         <label>
-          Username:
+          Username:{/**/}
           <input type="text" id="username" ref={usernameRef} required />
         </label>
 
         <label>
-          Email:
+          First Name:{/**/}
+          <input type="text" id="first-name" ref={firstNameRef} required />
+        </label>
+
+        <label>
+          Last Name:{/**/}
+          <input type="text" id="last-name" ref={lastNameRef} required />
+        </label>
+
+        <label>
+          Email:{/**/}
           <input type="email" id="email" ref={emailRef} required />
         </label>
 
         <label>
-          Password:
+          Password:{/**/}
           <input type="password" id="password1" ref={password1Ref} required />
         </label>
 
         <label>
-          Password (Confirm):
+          Password (Confirm):{/**/}
           <input type="password" id="password2" ref={password2Ref} required />
         </label>
         {isWarningVisible ? (
-          <>
-            <p>Registration failed, please try again.</p>
-          </>
+          <p>Registration failed, please try again.</p>
         ) : (
           <></>
         )}
@@ -92,7 +106,9 @@ const RegisterPage: React.FC = () => {
       <p>
         Already have an account?{" "}
         <span>
-          <a onClick={() => navigate("/login")}>Login instead.</a>
+          <button type="button" onClick={() => navigate("/login")}>
+            Login instead.
+          </button>
         </span>
       </p>
     </>

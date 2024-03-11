@@ -2,6 +2,7 @@ import { AxiosError, isAxiosError } from "axios";
 import { useEffect, useState } from "react";
 import UnlockModal from "../components/NavBar/UnlockModal";
 import { getTurboApi } from "../services/api";
+import { ERROR_MESSAGES } from "../services/constants/errorMessages";
 import { GLOBAL_URLS } from "../services/global/urls";
 import { handleErrors } from "../services/handleErrors";
 
@@ -86,7 +87,7 @@ const ProfilePage: React.FC = () => {
       <h2>Welcome Home, {userInfo?.username}</h2>
       <p>Email: {userInfo?.email}</p>
       <form>
-        <h3>Purchase 10 Credits below:</h3>
+        <h3>Purchase 5 Credits below:</h3>
         <p>Available Credits: {credits}</p>
         <button type="button" onClick={purchaseCredits}>
           Buy Now

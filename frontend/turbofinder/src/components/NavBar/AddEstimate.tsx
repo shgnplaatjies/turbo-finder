@@ -1,25 +1,25 @@
 import { AxiosError, isAxiosError } from "axios";
 import React, { useState } from "react";
-import Modal from "react-modal";
 import { getTurboApi } from "../../services/api";
 import { GLOBAL_URLS } from "../../services/global/urls";
 import { handleErrors } from "../../services/handleErrors";
 import { useVehiclesContext } from "../../services/hooks/Vehicle.hook";
 import { useViewableEstimatesContext } from "../../services/hooks/ViewableEstimates.hook";
+import UnlockModal from "./UnlockModal";
 
 const AddEstimation: React.FC = () => {
   const { selectedModel, selectedYear } = useVehiclesContext();
   const { refreshContext } = useViewableEstimatesContext();
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [modalMessage, setModalMessage] = useState("");
+  const [modalText, setModalText] = useState("");
 
   const openModal = (message: string) => {
-    setModalMessage(message);
+    setModalText(message);
     setModalIsOpen(true);
   };
 
   const afterModalClose = () => {
-    setModalMessage("");
+    setModalText("");
     setModalIsOpen(false);
   };
 
@@ -77,7 +77,7 @@ const AddEstimation: React.FC = () => {
   };
 
   return (
-    <div>
+    <>
       <button
         type="button"
         onClick={addEstimate}
@@ -86,15 +86,13 @@ const AddEstimation: React.FC = () => {
         Estimate | 5 Cr
       </button>
 
-      <Modal
+      <UnlockModal
         isOpen={modalIsOpen}
         onRequestClose={afterModalClose}
-        contentLabel="Example Modal"
-      >
-        <h2>{modalMessage}</h2>
-        <button onClick={afterModalClose}>Close</button>
-      </Modal>
-    </div>
+        modalText={modalText}
+        contentLabel="Adding Estimate"
+      />
+    </>
   );
 };
 
