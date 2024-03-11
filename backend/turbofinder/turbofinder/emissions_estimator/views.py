@@ -28,32 +28,24 @@ class DistanceUnitListCreateView(generics.ListCreateAPIView):
     """
     API View for listing and creating distance units.
 
-    Attributes:
-        queryset (QuerySet): The queryset for retrieving distance units.
-        serializer_class (Serializer): The serializer class for handling data serialization.
-        permission_classes (list): The list of permission classes required for this view.
-        authentication_classes (list): The list of authentication classes for this view.
     """
 
     queryset = DistanceUnit.objects.all()
     serializer_class = DistanceUnitSerializer
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [TokenAuthentication]
+    throttle_classes = [UserRateThrottle]
 
 class DistanceUnitRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     """
     API View for retrieving, updating, and deleting a specific distance unit.
 
-    Attributes:
-        queryset (QuerySet): The queryset for retrieving distance units.
-        serializer_class (Serializer): The serializer class for handling data serialization.
-        permission_classes (list): The list of permission classes required for this view.
-        authentication_classes (list): The list of authentication classes for this view.
     """
     queryset = DistanceUnit.objects.all()
     serializer_class = DistanceUnitSerializer
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [TokenAuthentication]
+    throttle_classes = [UserRateThrottle]
 
     def destroy(self, request, *args, **kwargs):
         """
@@ -84,16 +76,12 @@ class UserInfoListView(generics.ListAPIView):
     """
     API View for listing user information.
 
-    Attributes:
-        queryset (QuerySet): The queryset for retrieving user information.
-        serializer_class (Serializer): The serializer class for handling data serialization.
-        permission_classes (list): The list of permission classes required for this view.
-        authentication_classes (list): The list of authentication classes for this view.
     """
     queryset = TurboFinderUser.objects.all()
     serializer_class = TurboFinderUserInfoSerializer
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [TokenAuthentication]
+    throttle_classes = [UserRateThrottle]
 
     def get_queryset(self):
         """
@@ -132,19 +120,13 @@ class UserAddCreditsView(generics.RetrieveUpdateAPIView):
     """
     API View for retrieving and updating user credits.
 
-    Attributes:
-        queryset (QuerySet): The queryset for retrieving user credits.
-        serializer_class (Serializer): The serializer class for handling data serialization.
-        permission_classes (list): The list of permission classes required for this view.
-        authentication_classes (list): The list of authentication classes for this view.
-        throttle_classes (list): The list of throttle classes for controlling the rate of requests.
     """
     queryset = TurboFinderUser.objects.all()
     serializer_class = TurboFinderUserSerializer
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [TokenAuthentication]
-    
     throttle_classes = [UserRateThrottle]
+    
     
     def get_queryset(self):
         """
@@ -216,7 +198,6 @@ class EmissionEstimateCreateView(generics.CreateAPIView):
     serializer_class = EmissionEstimateSerializer
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [TokenAuthentication]
-    
     throttle_classes = [UserRateThrottle]
 
     def create(self, request, *args, **kwargs):
@@ -319,12 +300,6 @@ class ViewableEmissionEstimatesListCreateView(generics.ListCreateAPIView):
     """
     API View for listing and creating viewable emission estimates.
 
-    Attributes:
-        queryset (QuerySet): The queryset for retrieving viewable emission estimates.
-        serializer_class (Serializer): The serializer class for handling data serialization.
-        permission_classes (list): The list of permission classes required for this view.
-        authentication_classes (list): The list of authentication classes for this view.
-
     Methods:
         - create(request, *args, **kwargs): Handles POST requests to create viewable emission estimates.
             Returns:
@@ -338,6 +313,7 @@ class ViewableEmissionEstimatesListCreateView(generics.ListCreateAPIView):
     serializer_class = ViewableEmissionEstimatesSerializer
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [TokenAuthentication]
+    throttle_classes = [UserRateThrottle]
     
     def create(self, request, *args, **kwargs):
         emission_estimate_id = request.data.get('emissions_estimate', {}).get('id')
@@ -402,12 +378,6 @@ class AllViewableEmissionEstimates(generics.ListAPIView):
     """
     API View for listing all viewable emission estimates.
 
-    Attributes:
-        queryset (QuerySet): The queryset for retrieving all viewable emission estimates.
-        serializer_class (Serializer): The serializer class for handling data serialization.
-        permission_classes (list): The list of permission classes required for this view.
-        authentication_classes (list): The list of authentication classes for this view.
-
     Methods:
         - get_queryset(): Retrieves a list of all unique viewable emission estimates for the current user.
             Returns:
@@ -417,6 +387,7 @@ class AllViewableEmissionEstimates(generics.ListAPIView):
     serializer_class = SimplifiedViewableEmissionEstimatesSerializer
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [TokenAuthentication]
+    throttle_classes = [UserRateThrottle]
     
     def get_queryset(self):
         current_user = self.request.user

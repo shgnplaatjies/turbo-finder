@@ -14,16 +14,12 @@ class VehicleMakeListCreateView(generics.ListCreateAPIView):
   """
   API View for listing and creating vehicle makes.
 
-  Attributes:
-      queryset (QuerySet): The queryset for retrieving vehicle makes.
-      serializer_class (Serializer): The serializer class for handling data serialization.
-      permission_classes (list): The list of permission classes required for this view.
-      authentication_classes (list): The list of authentication classes for this view.
   """
   queryset = VehicleMake.objects.all()
   serializer_class = VehicleMakeSerializer
   permission_classes = [permissions.IsAuthenticated]
   authentication_classes = [TokenAuthentication]
+  throttle_classes = [UserRateThrottle]
   
   def create(self, request, *args, **kwargs):
     """
@@ -51,14 +47,11 @@ class VehicleModelCreateView(generics.ListCreateAPIView):
   """
     API View for creating and listing vehicle models associated with a specific vehicle make.
 
-    Attributes:
-        serializer_class (Serializer): The serializer class for handling data serialization.
-        permission_classes (list): The list of permission classes required for this view.
-        authentication_classes (list): The list of authentication classes for this view.
     """
   serializer_class = VehicleModelSerializer
   permission_classes = [permissions.IsAuthenticated]
   authentication_classes = [TokenAuthentication]
+  throttle_classes = [UserRateThrottle]
   
   def get_offset_limit(self, request):
       """
@@ -224,10 +217,16 @@ class VehicleModelCreateView(generics.ListCreateAPIView):
     )
 
 class VehicleMakeRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+  """
+  API View for updating and deleting vehicle makes.
+
+  """
   queryset = VehicleMake.objects.all()
   serializer_class = VehicleMakeSerializer
   authentication_classes = [TokenAuthentication]
-  permission_classes= [permissions.IsAuthenticated]
+  permission_classes= [permissions.IsAuthenticated, permissions.IsAdminUser]
+  throttle_classes = [UserRateThrottle]
+  
   
   def update(self, request, *args, **kwargs):
     pk = kwargs.get('pk')
