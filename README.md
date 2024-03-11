@@ -1,7 +1,3 @@
-# TurboFinder
-
-An app to find out about your vehicle's fuel emissions.
-
 # TurboFinder - Django Server with React Frontend
 
 TurboFinder is a web application template that combines the power of Django as a backend framework and React as a frontend library. This template serves as a foundation for building dynamic and modern web applications.
