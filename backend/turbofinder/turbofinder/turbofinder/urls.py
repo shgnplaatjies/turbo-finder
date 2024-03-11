@@ -30,7 +30,7 @@ urlpatterns = [
     path('api/', include('vehicle.urls')),
     path('api/', include('emissions_estimator.urls')),
     path('react/', include('react_app.urls')),
-    # path('react_app/', serve, {'path': 'index.html'}, name='react-app-static'),
+    path('react_app/', serve, {'path': 'index.html'}, name='react-app-static'),
     path('api/token/', ObtainAuthToken.as_view(), name='obtain-auth-token'),
     re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path('', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
