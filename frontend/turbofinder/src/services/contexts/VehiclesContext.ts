@@ -35,6 +35,7 @@ export interface VehiclesContextActions {
   updateSelectedYear: Dispatch<SetStateAction<number | undefined>>;
   updateSelectedUnit: Dispatch<SetStateAction<DistanceUnit | undefined>>;
   updateOffset: Dispatch<SetStateAction<number | undefined>>;
+  refreshContext: () => void;
 }
 
 export interface VehiclesContextValue

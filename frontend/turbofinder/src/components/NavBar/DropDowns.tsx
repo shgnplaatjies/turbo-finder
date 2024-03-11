@@ -50,7 +50,6 @@ const DropDowns: React.FC = () => {
       (model) => model.uuid === selectedModelId
     );
     updateSelectedModel(selectedModel);
-    updateSelectedYear(undefined); // Reset selectedYear when model changes
   };
 
   const handleYearChange = (event: React.ChangeEvent<HTMLSelectElement>) => {

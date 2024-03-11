@@ -3,7 +3,7 @@ from rest_framework import generics, views, status, permissions
 from rest_framework.throttling import UserRateThrottle
 from rest_framework.response import Response
 from .models import DistanceUnit, EmissionEstimate, ViewableEmissionEstimates, TurboFinderUser, VehicleModel
-from .serializers import DistanceUnitSerializer, EmissionEstimateSerializer, ViewableEmissionEstimatesSerializer, TurboFinderUserSerializer, SimplifiedViewableEmissionEstimatesSerializer
+from .serializers import DistanceUnitSerializer, EmissionEstimateSerializer, ViewableEmissionEstimatesSerializer, TurboFinderUserSerializer, TurboFinderUserInfoSerializer, SimplifiedViewableEmissionEstimatesSerializer
 import requests
 from decouple import config
 from datetime import datetime, timedelta, timezone
@@ -18,7 +18,6 @@ from django.db.models import F
 
 @method_decorator(csrf_exempt, name='dispatch')
 class CSRFGeneratorView(generics.ListAPIView):
-    permission_classes = [permissions.IsAdminUser]
 
     def get(self, request, *args, **kwargs):
         csrf_token = get_token(request)
@@ -48,6 +47,15 @@ class DistanceUnitRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIVie
 
         return super().destroy(request, *args, **kwargs)
     
+class UserInfoListView(generics.ListAPIView):
+    queryset = TurboFinderUser.objects.all()
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = TurboFinderUserInfoSerializer
+    authentication_classes = [TokenAuthentication]
+
+    def get_queryset(self):
+        return TurboFinderUser.objects.filter(username=self.request.user.username)
+
 class UserListCreditsView(generics.ListAPIView):
     queryset = TurboFinderUser.objects.all()
     permission_classes = [permissions.IsAuthenticated]
@@ -248,16 +256,19 @@ class AllViewableEmissionEstimates(generics.ListAPIView):
         current_user = self.request.user
 
         unique_estimates = {}
+
+        # O(n) way to filter out redundant items
         for viewable_estimate in ViewableEmissionEstimates.objects.all():
             emission_estimate = viewable_estimate.emissions_estimate
-            key = emission_estimate.id
 
-            if (
-                viewable_estimate.user == current_user
-                or key not in unique_estimates
-                or viewable_estimate.id > unique_estimates[key].id
-            ):
-                unique_estimates[key] = viewable_estimate
+            if emission_estimate.id in unique_estimates:
+                if (
+                    viewable_estimate.user == current_user
+                    and viewable_estimate.id > unique_estimates[emission_estimate.id].id
+                ):
+                    unique_estimates[emission_estimate.id] = viewable_estimate
+            else:
+                unique_estimates[emission_estimate.id] = viewable_estimate
 
         return unique_estimates.values()
 

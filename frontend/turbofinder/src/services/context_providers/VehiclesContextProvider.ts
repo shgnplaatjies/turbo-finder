@@ -18,6 +18,8 @@ interface VehiclesProviderProps {
 export const VehiclesProvider: React.FC<VehiclesProviderProps> = ({
   children,
 }) => {
+  const [refresh, setRefresh] = useState<boolean>(false);
+
   const offsetStep = 100;
   const [offset, setOffset] = useState<number>(0);
 
@@ -38,42 +40,44 @@ export const VehiclesProvider: React.FC<VehiclesProviderProps> = ({
   const [viewableModels, setViewableModels] = useState<VehicleModel[]>(models);
   const [viewableYears, setViewableYears] = useState<number[]>(years);
 
+  const fetchData = async (offsetValue: number) => {
+    try {
+      const turboApi = getTurboApi();
+
+      const vehicleModelsResponse = await turboApi.get(
+        `/api/vehicle-make/${TOYOTA_UUID}/models/`,
+        { data: { limit: offsetStep, offset: offsetValue } }
+      );
+
+      const unitsResponse = await turboApi.get(
+        GLOBAL_URLS.distanceUnitsGeneral
+      );
+
+      const modelsData: VehicleModel[] = vehicleModelsResponse.data;
+      const unitsData: DistanceUnit[] = unitsResponse.data;
+
+      const uniqueYears = [
+        ...new Set(
+          modelsData.map((model) => new Date(model.year).getFullYear())
+        ),
+      ];
+
+      setModels(modelsData);
+      setYears(uniqueYears);
+      setUnits(unitsData);
+
+      setViewableModels(modelsData);
+      setViewableYears(uniqueYears);
+    } catch (error) {
+      handleErrors(error, "Something went wrong with VehicleContextProvider");
+    }
+  };
+
+  const refreshContext = () => setRefresh((prev) => !prev);
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const turboApi = getTurboApi();
-
-        const vehicleModelsResponse = await turboApi.get(
-          `/api/vehicle-make/${TOYOTA_UUID}/models/`,
-          { data: { limit: offsetStep, offset: offset } }
-        );
-
-        const unitsResponse = await turboApi.get(
-          GLOBAL_URLS.distanceUnitsGeneral
-        );
-
-        const modelsData: VehicleModel[] = vehicleModelsResponse.data;
-        const unitsData: DistanceUnit[] = unitsResponse.data;
-
-        const uniqueYears = [
-          ...new Set(
-            modelsData.map((model) => new Date(model.year).getFullYear())
-          ),
-        ];
-
-        setModels(modelsData);
-        setYears(uniqueYears);
-        setUnits(unitsData);
-
-        setViewableModels(modelsData);
-        setViewableYears(uniqueYears);
-      } catch (error) {
-        handleErrors(error, "Something went wrong with VehicleContextProvider");
-      }
-    };
-
-    fetchData();
-  }, [offset]);
+    fetchData(offset);
+  }, [offset, refresh]);
 
   const updateOffset: VehiclesContextActions["updateOffset"] = (multiple) => {
     if (!multiple) return setOffset(0);
@@ -157,6 +161,7 @@ export const VehiclesProvider: React.FC<VehiclesProviderProps> = ({
     updateSelectedUnit,
     offset,
     updateOffset,
+    refreshContext,
   };
 
   return createElement(

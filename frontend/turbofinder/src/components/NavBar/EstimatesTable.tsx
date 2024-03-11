@@ -5,13 +5,14 @@ import { ViewableEstimate } from "../../services/contexts/ViewableEstimatesConte
 import { GLOBAL_URLS } from "../../services/global/urls";
 import { handleErrors } from "../../services/handleErrors";
 import { useViewableEstimatesContext } from "../../services/hooks/ViewableEstimates.hook";
+import UnlockModal from "./UnlockModal";
 
 const EstimatesTable: React.FC = () => {
   const { viewableEstimates } = useViewableEstimatesContext();
   console.log(viewableEstimates);
 
-  const defaultModalText = "Unlock | 3Cr";
-  const [unlockModalText, setUnlockModalText] = useState(defaultModalText);
+  const [isUnlockModalOpen, setIsUnlockModalOpen] = useState(false);
+  const [modalText, setModalText] = useState("Processing...");
 
   const addViewableEstimate = async (item: ViewableEstimate) => {
     const turboApi = getTurboApi();
@@ -21,19 +22,18 @@ const EstimatesTable: React.FC = () => {
         emissions_estimate: { id: item.emissions_estimate.id },
       });
 
-      window.location.reload();
-      setUnlockModalText("Success");
+      setModalText("Success");
     } catch (error) {
       if (isAxiosError(error)) {
         const axiosError = error as AxiosError;
         if (axiosError.response)
           switch (axiosError.response.status) {
             case 402:
-              setUnlockModalText("Insufficient Funds.");
+              setModalText("Insufficient Funds.");
               break;
 
             case 409:
-              setUnlockModalText("Conflict");
+              setModalText("Conflict");
               break;
 
             default:
@@ -45,52 +45,66 @@ const EstimatesTable: React.FC = () => {
                   axiosError.response.status,
                   "Unexpectedly failed to add estimate."
                 );
-                setUnlockModalText("Failed");
+                setModalText("Failed");
                 break;
               }
-              setUnlockModalText("Unexpected Server Error");
+              setModalText("Unexpected Server Error");
               break;
           }
       }
-      handleErrors(error, "Unexpected error occured when adding.");
-      setUnlockModalText("Unexpected Error");
+      handleErrors(error, "Unexpected error occurred when adding.");
+      setModalText("Unexpected Error");
+    } finally {
+      setIsUnlockModalOpen(true);
     }
   };
 
+  const closeUnlockModal = () => {
+    setIsUnlockModalOpen(false);
+  };
+
   return (
-    <table className="viewableEstimates-table">
-      <thead>
-        <tr>
-          <th>Model</th>
-          <th>Year</th>
-          <th>Emissions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {viewableEstimates.map((item) => (
-          <tr key={item.id}>
-            <td>{item.emissions_estimate.model.name}</td>
-            <td>
-              {new Date(item.emissions_estimate.model.year).getFullYear()}
-            </td>
-            <td>
-              {item.emissions_estimate.carbon_grams !== undefined &&
-              item.emissions_estimate.distance_scale !== undefined ? (
-                <>{item.emissions_estimate.carbon_grams} </>
-              ) : (
-                <button
-                  type="button"
-                  id="createViewableEstimate"
-                  onClick={() => addViewableEstimate(item)}
-                >
-                  {unlockModalText}
-                </button>
-              )}
-            </td>
+    <div>
+      <table className="viewableEstimates-table">
+        <thead>
+          <tr>
+            <th>Model</th>
+            <th>Year</th>
+            <th>Emissions</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {viewableEstimates.map((item) => (
+            <tr key={item.id}>
+              <td>{item.emissions_estimate.model.name}</td>
+              <td>
+                {new Date(item.emissions_estimate.model.year).getFullYear()}
+              </td>
+              <td>
+                {item.emissions_estimate.carbon_grams !== undefined &&
+                item.emissions_estimate.distance_scale !== undefined ? (
+                  <>{item.emissions_estimate.carbon_grams} </>
+                ) : (
+                  <button
+                    type="button"
+                    id="createViewableEstimate"
+                    onClick={() => addViewableEstimate(item)}
+                  >
+                    Unlock | 3Cr
+                  </button>
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      <UnlockModal
+        isOpen={isUnlockModalOpen}
+        onRequestClose={closeUnlockModal}
+        modalText={modalText}
+      />
+    </div>
   );
 };
 

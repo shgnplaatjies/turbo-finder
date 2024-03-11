@@ -36,9 +36,7 @@ export const ViewableEstimatesProvider: React.FC<
     }
   };
 
-  const refreshContext = () => {
-    setRefresh((prev) => !prev);
-  };
+  const refreshContext = () => setRefresh((prev) => !prev);
 
   useEffect(() => {
     fetchViewableEstimates();

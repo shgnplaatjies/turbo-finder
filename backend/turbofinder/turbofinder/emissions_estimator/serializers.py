@@ -2,6 +2,16 @@ from rest_framework import serializers
 from .models import ViewableEmissionEstimates, EmissionEstimate, DistanceUnit, TurboFinderUser
 from vehicle.serializers import VehicleModelSerializer
 
+
+class TurboFinderUserInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TurboFinderUser
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'credits']
+
+class TurboFinderUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TurboFinderUser
+        fields = ['credits']
 class EmissionEstimateSerializer(serializers.ModelSerializer):
     model = VehicleModelSerializer()
     class Meta:
@@ -52,6 +62,9 @@ class SimplifiedViewableEmissionEstimatesSerializer(serializers.ModelSerializer)
                 'year': model.year,
                 'uuid': model.uuid,
             },
+            'estimated_by' : {
+                'username': emission_estimate.estimated_by.username,
+            },
             'estimated_at': emission_estimate.estimated_at,
             'unit_id': emission_estimate.unit_id.id,
         }
@@ -68,7 +81,6 @@ class SimplifiedViewableEmissionEstimatesSerializer(serializers.ModelSerializer)
     def get_user(self, instance):
         user = instance.user
         return {
-            'id': user.id,
             'username': user.username,
         }
 
@@ -78,7 +90,3 @@ class DistanceUnitSerializer(serializers.ModelSerializer):
         model = DistanceUnit
         fields = '__all__'
 
-class TurboFinderUserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = TurboFinderUser
-        fields = ['credits']

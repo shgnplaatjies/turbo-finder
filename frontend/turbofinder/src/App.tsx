@@ -2,6 +2,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import DashboardPage from "./pages/DashboardPage";
 import LoginPage from "./pages/LoginPage";
 import NotFoundPage from "./pages/NotFoundPage";
+import ProfilePage from "./pages/ProfilePage";
 import RegisterPage from "./pages/RegisterPage";
 import { VehiclesProvider } from "./services/context_providers/VehiclesContextProvider";
 import { ViewableEstimatesProvider } from "./services/context_providers/ViewableEstimatesProvider";
@@ -20,6 +21,7 @@ const App = () => {
               path="/"
               element={isAuthenticated ? <DashboardPage /> : <LoginPage />}
             />
+            <Route path="/profile" element={<ProfilePage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </BrowserRouter>

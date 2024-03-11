@@ -1,5 +1,6 @@
 import Cookies from "js-cookie";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { getTurboApi } from "../../services/api";
 import { GLOBAL_URLS } from "../../services/global/urls";
 
@@ -15,19 +16,25 @@ const NavBar: React.FC = () => {
     }
   };
 
+  const navigate = useNavigate();
+
   return (
     <nav className="navbar">
       <ul>
         <li>
-          <a>Logo</a>
+          <button type="button">Logo</button>
         </li>
       </ul>
       <ul>
         <li>
-          <a>Profile</a>
+          <button type="button" onClick={() => navigate("/profile")}>
+            Profile
+          </button>
         </li>
         <li>
-          <a onClick={logout}>Logout</a>
+          <button type="button" onClick={logout}>
+            Logout
+          </button>
         </li>
       </ul>
     </nav>
