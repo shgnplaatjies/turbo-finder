@@ -16,18 +16,18 @@ const UnlockModal: React.FC<UnlockModalProps> = ({
   contentLabel = "",
 }) => {
   return (
-    <Modal
-      isOpen={isOpen}
-      onRequestClose={onRequestClose}
-      contentLabel={contentLabel}
-    >
-      <article className="abstract-modal">
+    <article className="abstract-modal">
+      <Modal
+        isOpen={isOpen}
+        onRequestClose={onRequestClose}
+        contentLabel={contentLabel}
+      >
         <p>{modalText}</p>
         <button type="button" onClick={onRequestClose}>
           {closeButtonText}
         </button>
-      </article>
-    </Modal>
+      </Modal>
+    </article>
   );
 };
 

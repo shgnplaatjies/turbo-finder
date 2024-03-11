@@ -1,9 +1,9 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import DashboardPage from "./pages/DashboardPage";
-import LoginPage from "./pages/LoginPage";
-import NotFoundPage from "./pages/NotFoundPage";
-import ProfilePage from "./pages/ProfilePage";
-import RegisterPage from "./pages/RegisterPage";
+import ProfilePage from "../ProfilePage";
+import DashboardPage from "./pages/DashboardPage/DashboardPage";
+import LoginPage from "./pages/LoginPage/LoginPage";
+import NotFoundPage from "./pages/NotFoundPage/NotFoundPage";
+import RegisterPage from "./pages/RegisterPage/RegisterPage";
 import { VehiclesProvider } from "./services/context_providers/VehiclesContextProvider";
 import { ViewableEstimatesProvider } from "./services/context_providers/ViewableEstimatesProvider";
 import { useAuth } from "./services/hooks/auth.hook";

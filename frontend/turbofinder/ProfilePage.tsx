@@ -1,10 +1,10 @@
 import { AxiosError, isAxiosError } from "axios";
 import { useEffect, useState } from "react";
-import UnlockModal from "../components/NavBar/UnlockModal";
-import { getTurboApi } from "../services/api";
-import { ERROR_MESSAGES } from "../services/constants/errorMessages";
-import { GLOBAL_URLS } from "../services/global/urls";
-import { handleErrors } from "../services/handleErrors";
+import UnlockModal from "./src/components/TurboModal/UnlockModal";
+import { getTurboApi } from "./src/services/api";
+import { ERROR_MESSAGES } from "./src/services/constants/errorMessages";
+import { GLOBAL_URLS } from "./src/services/global/urls";
+import { handleErrors } from "./src/services/handleErrors";
 
 interface UserInfoProps {
   id: number;

@@ -10,7 +10,7 @@ import {
   gramsToOunces,
   kilometersToMiles,
 } from "../../services/utils/unitConversion";
-import UnlockModal from "./UnlockModal";
+import UnlockModal from "../TurboModal/UnlockModal";
 
 const EstimatesTable: React.FC = () => {
   const { viewableEstimates } = useViewableEstimatesContext();

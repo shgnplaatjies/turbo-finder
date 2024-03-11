@@ -2,8 +2,8 @@
 import Cookies from "js-cookie";
 import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getTurboApi } from "../services/api";
-import { handleErrors } from "../services/handleErrors";
+import { getTurboApi } from "../../services/api";
+import { handleErrors } from "../../services/handleErrors";
 
 const RegisterPage: React.FC = () => {
   const usernameRef = useRef<HTMLInputElement>(null);

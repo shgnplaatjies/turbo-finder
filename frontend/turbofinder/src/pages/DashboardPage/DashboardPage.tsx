@@ -1,7 +1,7 @@
 import React from "react";
-import DropDowns from "../components/NavBar/DropDowns";
-import EstimatesTable from "../components/NavBar/EstimatesTable";
-import NavBar from "../components/NavBar/NavBar";
+import DropDowns from "../../components/DropDowns/DropDowns";
+import EstimatesTable from "../../components/EstimatesTable/EstimatesTable";
+import NavBar from "../../components/NavBar/NavBar";
 
 const DashboardPage: React.FC = () => {
   return (

@@ -40,3 +40,41 @@
 .read-the-docs {
   color: #888;
 }
+
+body {
+  font-family: "Arial", sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f0f0f0;
+}
+
+button {
+  cursor: pointer;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 8px;
+}
+
+button {
+  background-color: #f0f0f0;
+  box-shadow: 4px 4px 8px #c4c4c4, -4px -4px 8px #ffffff;
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  box-shadow: 6px 6px 10px #c4c4c4, -6px -6px 10px #ffffff;
+}
+
+input {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 8px;
+  background-color: #f0f0f0;
+  box-shadow: 4px 4px 8px #c4c4c4, -4px -4px 8px #ffffff;
+  transition: all 0.3s ease;
+}
+
+input:hover,
+input:focus {
+  box-shadow: 6px 6px 10px #c4c4c4, -6px -6px 10px #ffffff;
+}
