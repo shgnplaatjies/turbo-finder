@@ -1,13 +1,11 @@
-import { config } from "dotenv";
 import React from "react";
 import { createRoot } from "react-dom/client";
+import ReactModal from "react-modal";
 import App from "./App.tsx";
-import "./index.css";
+import "./index.scss";
 
 const main = () => {
-  config();
-  console.log("React connected!");
-
+  ReactModal.setAppElement("#root");
   createRoot(document.getElementById("root")!).render(
     <React.StrictMode>
       <App />

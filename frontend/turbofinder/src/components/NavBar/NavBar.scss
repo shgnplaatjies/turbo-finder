@@ -1,0 +1,32 @@
+// NavBar.scss
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background-color: #f0f0f0;
+  box-shadow: 0.125rem 0.125rem 0.25rem #c4c4c4,
+    -0.125rem -0.125rem 0.25rem #ffffff;
+
+  button {
+    margin: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #333;
+    font-size: 1rem;
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  svg:first-child {
+    transform: scaleX(-1);
+  }
+
+  svg {
+    height: 2rem;
+  }
+}

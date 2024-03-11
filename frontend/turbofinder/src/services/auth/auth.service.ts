@@ -1,4 +1,5 @@
 import axios from "axios";
+import Cookies from "js-cookie";
 import { GLOBAL_URLS } from "../global/urls";
 import { handleErrors } from "../handleErrors";
 
@@ -17,7 +18,9 @@ export const getBearerToken = async ({
       { username, password }
     );
     const { token } = response.data;
-    // Add to user's cookies
+
+    Cookies.set("BearerToken", token);
+
     if (token) return token;
 
     return 404;
@@ -25,4 +28,20 @@ export const getBearerToken = async ({
     handleErrors(error, "Something went wrong with login");
     return 404;
   }
+};
+
+export const checkBearerToken = async (token: string) => {
+  const response = await axios.get(
+    `${GLOBAL_URLS.applicationRoot}${GLOBAL_URLS.userCreditsList}`,
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Token ${token}`,
+      },
+    }
+  );
+
+  if (response.status == 200) return true;
+
+  return false;
 };
