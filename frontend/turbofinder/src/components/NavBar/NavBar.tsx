@@ -3,6 +3,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { getTurboApi } from "../../services/api";
 import { GLOBAL_URLS } from "../../services/global/urls";
+import "./NavBar.scss";
 
 const NavBar: React.FC = () => {
   const logout = async () => {

@@ -2,8 +2,9 @@
 import Cookies from "js-cookie";
 import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getTurboApi } from "../../services/api";
-import { handleErrors } from "../../services/handleErrors";
+import { getTurboApi } from "../../../services/api";
+import { handleErrors } from "../../../services/handleErrors";
+import "../AuthPage.scss";
 
 const RegisterPage: React.FC = () => {
   const usernameRef = useRef<HTMLInputElement>(null);
@@ -61,48 +62,42 @@ const RegisterPage: React.FC = () => {
   };
 
   return (
-    <>
+    <form className="auth-page register-page">
       <h2>Register</h2>
-      <form>
-        <label>
-          Username:{/**/}
-          <input type="text" id="username" ref={usernameRef} required />
-        </label>
+      <label>
+        Username:{/**/}
+        <input type="text" id="username" ref={usernameRef} required />
+      </label>
 
-        <label>
-          First Name:{/**/}
-          <input type="text" id="first-name" ref={firstNameRef} required />
-        </label>
+      <label>
+        First Name:{/**/}
+        <input type="text" id="first-name" ref={firstNameRef} required />
+      </label>
 
-        <label>
-          Last Name:{/**/}
-          <input type="text" id="last-name" ref={lastNameRef} required />
-        </label>
+      <label>
+        Last Name:{/**/}
+        <input type="text" id="last-name" ref={lastNameRef} required />
+      </label>
 
-        <label>
-          Email:{/**/}
-          <input type="email" id="email" ref={emailRef} required />
-        </label>
+      <label>
+        Email:{/**/}
+        <input type="email" id="email" ref={emailRef} required />
+      </label>
 
-        <label>
-          Password:{/**/}
-          <input type="password" id="password1" ref={password1Ref} required />
-        </label>
+      <label>
+        Password:{/**/}
+        <input type="password" id="password1" ref={password1Ref} required />
+      </label>
 
-        <label>
-          Password (Confirm):{/**/}
-          <input type="password" id="password2" ref={password2Ref} required />
-        </label>
-        {isWarningVisible ? (
-          <p>Registration failed, please try again.</p>
-        ) : (
-          <></>
-        )}
+      <label>
+        Password (Confirm):{/**/}
+        <input type="password" id="password2" ref={password2Ref} required />
+      </label>
+      {isWarningVisible ? <p>Registration failed, please try again.</p> : <></>}
 
-        <button type="button" onClick={handleRegister}>
-          Register
-        </button>
-      </form>
+      <button type="button" onClick={handleRegister}>
+        Register
+      </button>
       <p>
         Already have an account?{" "}
         <span>
@@ -111,7 +106,7 @@ const RegisterPage: React.FC = () => {
           </button>
         </span>
       </p>
-    </>
+    </form>
   );
 };
 

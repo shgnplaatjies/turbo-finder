@@ -6,6 +6,7 @@ import { handleErrors } from "../../services/handleErrors";
 import { useVehiclesContext } from "../../services/hooks/Vehicle.hook";
 import { useViewableEstimatesContext } from "../../services/hooks/ViewableEstimates.hook";
 import UnlockModal from "../TurboModal/UnlockModal";
+import "./AddEstimate.scss";
 
 const AddEstimation: React.FC = () => {
   const { selectedModel, selectedYear } = useVehiclesContext();
@@ -77,7 +78,7 @@ const AddEstimation: React.FC = () => {
   };
 
   return (
-    <>
+    <article className="add-estimate-component">
       <button
         type="button"
         onClick={addEstimate}
@@ -92,7 +93,7 @@ const AddEstimation: React.FC = () => {
         modalText={modalText}
         contentLabel="Adding Estimate"
       />
-    </>
+    </article>
   );
 };
 

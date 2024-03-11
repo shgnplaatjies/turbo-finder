@@ -26,6 +26,11 @@
     /* OS compatibility */
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["src", "src/**/*.ts", "src/**/*.d.ts", "ProfilePage.tsx"],
+  "include": [
+    "src",
+    "src/**/*.ts",
+    "src/**/*.d.ts",
+    "src/pages/ProfilePage/ProfilePage.tsx"
+  ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

@@ -1,9 +1,10 @@
-// Login.tsx
+// Login.tsxauth-page login-page
 import Cookies from "js-cookie";
 import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getTurboApi } from "../../services/api";
-import { handleErrors } from "../../services/handleErrors";
+import { getTurboApi } from "../../../services/api";
+import { handleErrors } from "../../../services/handleErrors";
+import "../AuthPage.scss";
 
 const LoginPage: React.FC = () => {
   const usernameRef = useRef<HTMLInputElement>(null);
@@ -60,37 +61,31 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <>
+    <form className="">
       <h2>Login</h2>
-      <form>
-        <label>
-          Username:
-          <input type="text" id="username" ref={usernameRef} required />
-        </label>
+      <label>
+        Username:
+        <input type="text" id="username" ref={usernameRef} required />
+      </label>
 
-        <label>
-          Password:
-          <input type="password" id="password1" ref={passwordRef} required />
-        </label>
+      <label>
+        Password:
+        <input type="password" id="password1" ref={passwordRef} required />
+      </label>
 
-        {isWarningVisible ? (
-          <p>Something went wrong. Please try again</p>
-        ) : (
-          <></>
-        )}
+      {isWarningVisible ? <p>Something went wrong. Please try again</p> : <></>}
 
-        <button type="button" onClick={handleLogin}>
-          Login
-        </button>
+      <button type="button" onClick={handleLogin}>
+        Login
+      </button>
 
-        <p>
-          Already have an account?{" "}
-          <span>
-            <a onClick={() => navigate("/register")}>Register instead.</a>
-          </span>
-        </p>
-      </form>
-    </>
+      <p>
+        Already have an account?{" "}
+        <span>
+          <a onClick={() => navigate("/register")}>Register instead.</a>
+        </span>
+      </p>
+    </form>
   );
 };
 

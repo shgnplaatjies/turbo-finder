@@ -66,6 +66,8 @@ export const VehiclesProvider: React.FC<VehiclesProviderProps> = ({
       setYears(uniqueYears);
       setUnits(unitsData);
 
+      setSelectedUnit(unitsData[0]);
+
       setViewableModels(modelsData);
       setViewableYears(uniqueYears);
     } catch (error) {
