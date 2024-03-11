@@ -20,9 +20,7 @@ export const getTurboApi = () => {
           "Content-Type": "application/json",
           Authorization: `Token ${authToken}`,
         }
-      : {
-          "Content-Type": "application/json",
-        },
+      : { "Content-Type": "application/json" },
   });
 
   return turboApi;
