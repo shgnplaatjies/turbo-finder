@@ -78,21 +78,23 @@ const AddEstimation: React.FC = () => {
   };
 
   return (
-    <article className="add-estimate-component">
+    <article className="add-estimate-container">
       <button
         type="button"
         onClick={addEstimate}
-        className="add-estimate-component"
+        className="add-estimate-container"
       >
         Estimate | 5 Cr
       </button>
 
-      <UnlockModal
-        isOpen={modalIsOpen}
-        onRequestClose={afterModalClose}
-        modalText={modalText}
-        contentLabel="Adding Estimate"
-      />
+      {modalIsOpen && (
+        <UnlockModal
+          isOpen={modalIsOpen}
+          onRequestClose={afterModalClose}
+          modalText={modalText}
+          contentLabel="Adding Estimate"
+        />
+      )}
     </article>
   );
 };

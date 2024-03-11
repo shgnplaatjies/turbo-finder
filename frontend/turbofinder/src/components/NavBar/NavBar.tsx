@@ -1,6 +1,8 @@
 import Cookies from "js-cookie";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import ChevronIcon from "../../assets/Chevron/Chevron";
+import LogoIcon from "../../assets/Logo/Logo";
 import { getTurboApi } from "../../services/api";
 import { GLOBAL_URLS } from "../../services/global/urls";
 import "./NavBar.scss";
@@ -21,23 +23,22 @@ const NavBar: React.FC = () => {
 
   return (
     <nav className="navbar">
-      <ul>
-        <li>
-          <button type="button">Logo</button>
-        </li>
-      </ul>
-      <ul>
-        <li>
-          <button type="button" onClick={() => navigate("/profile")}>
-            Profile
-          </button>
-        </li>
-        <li>
-          <button type="button" onClick={logout}>
-            Logout
-          </button>
-        </li>
-      </ul>
+      <button type="button" onClick={() => navigate(-1)} aria-label="Go back">
+        <ChevronIcon />
+      </button>
+      <button
+        type="button"
+        onClick={() => navigate("/")}
+        aria-label="Go to homepage"
+      >
+        <LogoIcon />
+      </button>
+      <button type="button" onClick={() => navigate("/profile")}>
+        Profile
+      </button>
+      <button type="button" onClick={logout}>
+        Logout
+      </button>
     </nav>
   );
 };

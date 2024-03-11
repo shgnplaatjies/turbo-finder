@@ -13,7 +13,7 @@ import {
 import UnlockModal from "../TurboModal/UnlockModal";
 
 const EstimatesTable: React.FC = () => {
-  const { viewableEstimates } = useViewableEstimatesContext();
+  const { viewableEstimates, refreshContext } = useViewableEstimatesContext();
   const { selectedUnit } = useVehiclesContext();
   const isMetric = selectedUnit?.symbol === "km";
   const defaultDistanceScale = 100;
@@ -63,6 +63,7 @@ const EstimatesTable: React.FC = () => {
       setModalText("Unexpected Error");
     } finally {
       setIsUnlockModalOpen(true);
+      refreshContext();
     }
   };
 
@@ -95,19 +96,15 @@ const EstimatesTable: React.FC = () => {
                     {isMetric
                       ? item.emissions_estimate.carbon_grams
                       : gramsToOunces(
-                          +Number(
-                            item.emissions_estimate.distance_scale
-                          ).toFixed(2)
-                        )}{" "}
+                          parseFloat(item.emissions_estimate.distance_scale)
+                        ).toFixed(3)}{" "}
                   </td>
                   <td>
                     {isMetric
                       ? item.emissions_estimate.distance_scale
                       : kilometersToMiles(
-                          +Number(
-                            item.emissions_estimate.distance_scale
-                          ).toFixed(2)
-                        )}{" "}
+                          parseFloat(item.emissions_estimate.distance_scale)
+                        ).toFixed(3)}{" "}
                   </td>
                 </>
               ) : (

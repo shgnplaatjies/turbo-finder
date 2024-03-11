@@ -26,14 +26,14 @@ const DropDowns: React.FC = () => {
   } = useVehiclesContext();
 
   const modelOptions: Option[] = [
-    { value: "", label: "-- Select --" },
+    { value: "", label: "Pick a Vehicle" },
     ...viewableModels.map((model: VehicleModel) => ({
       value: model.uuid,
       label: model.name,
     })),
   ];
   const yearOptions: Option[] = [
-    { value: "", label: "-- Select --" },
+    { value: "", label: "Pick a Year" },
     ...viewableYears.map((year) => ({
       value: year.toString(),
       label: year.toString(),
@@ -67,42 +67,47 @@ const DropDowns: React.FC = () => {
   };
 
   return (
-    <form className="drop-downs">
-      <label>
-        Select a Model:{/**/}
-        <select value={selectedModel?.uuid ?? ""} onChange={handleModelChange}>
-          {modelOptions.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
-      </label>
+    <form className="drop-downs-container">
+      <h3>Carbon Estimator</h3>
+      <label htmlFor="modelSelect">Select a Model:</label>
+      <select
+        id="modelSelect"
+        value={selectedModel?.uuid ?? ""}
+        onChange={handleModelChange}
+      >
+        {modelOptions.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
 
-      <label>
-        Select a Year:{/**/}
-        <select
-          value={selectedYear?.toString() ?? ""}
-          onChange={handleYearChange}
-        >
-          {yearOptions.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
-      </label>
+      <label htmlFor="yearSelect">Select a Year:</label>
+      <select
+        id="yearSelect"
+        value={selectedYear?.toString() ?? ""}
+        onChange={handleYearChange}
+      >
+        {yearOptions.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
 
-      <label>
-        Distance Unit:{/**/}
-        <select value={selectedUnit?.symbol ?? ""} onChange={handleUnitChange}>
-          {unitOptions.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
-      </label>
+      <label htmlFor="unitSelect">Distance Unit:</label>
+      <select
+        id="unitSelect"
+        value={selectedUnit?.symbol ?? ""}
+        onChange={handleUnitChange}
+      >
+        {unitOptions.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+
       <AddEstimation />
     </form>
   );

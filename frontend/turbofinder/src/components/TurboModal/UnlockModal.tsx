@@ -1,5 +1,5 @@
 import Modal from "react-modal";
-
+import "./TurboModal.scss";
 interface UnlockModalProps {
   isOpen: boolean;
   onRequestClose: () => void;
@@ -15,7 +15,7 @@ const UnlockModal: React.FC<UnlockModalProps> = ({
   closeButtonText = "Close",
   contentLabel = "",
 }) => {
-  return (
+  return isOpen ? (
     <article className="abstract-modal">
       <Modal
         isOpen={isOpen}
@@ -28,7 +28,7 @@ const UnlockModal: React.FC<UnlockModalProps> = ({
         </button>
       </Modal>
     </article>
-  );
+  ) : null;
 };
 
 export default UnlockModal;

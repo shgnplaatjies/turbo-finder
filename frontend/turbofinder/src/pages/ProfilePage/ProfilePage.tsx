@@ -5,7 +5,7 @@ import { getTurboApi } from "../../services/api";
 import { ERROR_MESSAGES } from "../../services/constants/errorMessages";
 import { GLOBAL_URLS } from "../../services/global/urls";
 import { handleErrors } from "../../services/handleErrors";
-
+import "./ProfilePage.scss";
 interface UserInfoProps {
   id: number;
   credits: number;
@@ -83,7 +83,7 @@ const ProfilePage: React.FC = () => {
   };
 
   return (
-    <>
+    <main className="profile-page-container">
       <h2>Welcome Home, {userInfo?.username}</h2>
       <p>Email: {userInfo?.email}</p>
       <form>
@@ -94,12 +94,14 @@ const ProfilePage: React.FC = () => {
         </button>
       </form>
 
-      <UnlockModal
-        isOpen={modalIsOpen}
-        onRequestClose={afterModalClose}
-        modalText={modalText}
-      />
-    </>
+      {modalIsOpen && (
+        <UnlockModal
+          isOpen={modalIsOpen}
+          onRequestClose={afterModalClose}
+          modalText={modalText}
+        />
+      )}
+    </main>
   );
 };
 

@@ -61,31 +61,37 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <form className="">
-      <h2>Login</h2>
-      <label>
-        Username:
-        <input type="text" id="username" ref={usernameRef} required />
-      </label>
+    <main>
+      <form>
+        <h2>Login</h2>
+        <label>
+          Username:
+          <input type="text" id="username" ref={usernameRef} required />
+        </label>
 
-      <label>
-        Password:
-        <input type="password" id="password1" ref={passwordRef} required />
-      </label>
+        <label>
+          Password:
+          <input type="password" id="password1" ref={passwordRef} required />
+        </label>
 
-      {isWarningVisible ? <p>Something went wrong. Please try again</p> : <></>}
+        {isWarningVisible ? (
+          <p>Something went wrong. Please try again</p>
+        ) : (
+          <></>
+        )}
 
-      <button type="button" onClick={handleLogin}>
-        Login
-      </button>
+        <button type="button" onClick={handleLogin}>
+          Login
+        </button>
 
-      <p>
-        Already have an account?{" "}
-        <span>
-          <a onClick={() => navigate("/register")}>Register instead.</a>
-        </span>
-      </p>
-    </form>
+        <p>
+          Already have an account?{" "}
+          <span>
+            <a onClick={() => navigate("/register")}>Register instead.</a>
+          </span>
+        </p>
+      </form>
+    </main>
   );
 };
 
