@@ -28,8 +28,8 @@ class VehicleMakeListCreateView(generics.ListCreateAPIView):
     )
 
 class VehicleModelCreateView(generics.ListCreateAPIView):
-  permission_classes = [permissions.IsAuthenticated]
   serializer_class = VehicleModelSerializer
+  permission_classes = [permissions.IsAuthenticated]
   authentication_classes = [TokenAuthentication]
   
   def get_offset_limit(self, request):

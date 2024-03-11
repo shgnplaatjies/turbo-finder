@@ -49,8 +49,8 @@ class DistanceUnitRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIVie
     
 class UserInfoListView(generics.ListAPIView):
     queryset = TurboFinderUser.objects.all()
-    permission_classes = [permissions.IsAuthenticated]
     serializer_class = TurboFinderUserInfoSerializer
+    permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [TokenAuthentication]
 
     def get_queryset(self):
@@ -58,8 +58,8 @@ class UserInfoListView(generics.ListAPIView):
 
 class UserListCreditsView(generics.ListAPIView):
     queryset = TurboFinderUser.objects.all()
-    permission_classes = [permissions.IsAuthenticated]
     serializer_class = TurboFinderUserSerializer
+    permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [TokenAuthentication]
 
     def get_queryset(self):
@@ -67,8 +67,8 @@ class UserListCreditsView(generics.ListAPIView):
 
 class UserAddCreditsView(generics.RetrieveUpdateAPIView):
     queryset = TurboFinderUser.objects.all()
-    permission_classes = [permissions.IsAuthenticated]
     serializer_class = TurboFinderUserSerializer
+    permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [TokenAuthentication]
     
     throttle_classes = [UserRateThrottle]
@@ -246,11 +246,11 @@ class ViewableEmissionEstimatesListCreateView(generics.ListCreateAPIView):
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-
 class AllViewableEmissionEstimates(generics.ListAPIView):
     queryset = ViewableEmissionEstimates.objects.all()
     serializer_class = SimplifiedViewableEmissionEstimatesSerializer
     permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
     
     def get_queryset(self):
         current_user = self.request.user
@@ -271,8 +271,6 @@ class AllViewableEmissionEstimates(generics.ListAPIView):
                 unique_estimates[emission_estimate.id] = viewable_estimate
 
         return unique_estimates.values()
-
-
 
 class ViewableEmissionEstimatesRetrieveDestroyView(generics.RetrieveDestroyAPIView):
     queryset = ViewableEmissionEstimates.objects.all()
