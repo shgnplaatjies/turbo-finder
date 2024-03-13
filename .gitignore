@@ -184,3 +184,5 @@ out/
 *.njsproj
 *.sln
 *.sw?
+backend/turbofinder/turbofinder/turbofinder.zip
+backend/turbofinder/turbofinder/static/

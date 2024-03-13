@@ -22,12 +22,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-l5@3ie8&42*n)092slnhgb!9s&yp9@a*bl64v(wx^j*o+3pfx#'
+SECRET_KEY = config('DJANGO_SECRET')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["turbofinder.pixelscape.co.za", "turbofinder.pixelscape.co.za"]
 
 
 # Application definition
@@ -142,7 +142,12 @@ STATICFILES_DIRS = [
     # os.path.join(BASE_DIR, 'react_app/static'),
     BASE_DIR / 'react_app/static',
 ]
-STATIC_ROOT = BASE_DIR / "static"
+
+# STATIC_ROOT = BASE_DIR / "static"
+STATIC_ROOT= "/home/dextertu/turbofinder/static"
+
+MEDIA_ROOT = "/home/dextertu/turbofinder/media"
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
