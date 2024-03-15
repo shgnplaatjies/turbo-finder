@@ -1,5 +1,6 @@
 import axios from "axios";
 import Cookies from "js-cookie";
+import { getDjangoHostUrl } from "./global/urls";
 
 export const getCarbonApi = () =>
   axios.create({
@@ -10,6 +11,10 @@ export const getCarbonApi = () =>
     },
   });
 
+const corsHeaders = {
+  "Access-Control-Allow-Origin": getDjangoHostUrl(),
+};
+
 export const getTurboApi = () => {
   const authToken = Cookies.get("BearerToken");
 
@@ -17,11 +22,14 @@ export const getTurboApi = () => {
     baseURL: import.meta.env.VITE_DJANGO_URL,
     headers: authToken
       ? {
+          ...corsHeaders,
           "Content-Type": "application/json",
           Authorization: `Token ${authToken}`,
         }
-      : { "Content-Type": "application/json" },
+      : {
+          ...corsHeaders,
+          "Content-Type": "application/json",
+        },
   });
-
   return turboApi;
 };

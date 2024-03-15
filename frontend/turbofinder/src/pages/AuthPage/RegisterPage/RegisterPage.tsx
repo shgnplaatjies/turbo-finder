@@ -8,13 +8,11 @@ import "../AuthPage.scss";
 
 const RegisterPage: React.FC = () => {
   const usernameRef = useRef<HTMLInputElement>(null);
-  const firstNameRef = useRef<HTMLInputElement>(null);
-  const lastNameRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
   const password1Ref = useRef<HTMLInputElement>(null);
   const password2Ref = useRef<HTMLInputElement>(null);
 
-  const [isWarningVisible, setWarningVisible] = useState(false);
+  const [isWarningVisible, setIsWarningVisible] = useState(false);
 
   const navigate = useNavigate();
 
@@ -22,8 +20,6 @@ const RegisterPage: React.FC = () => {
 
   const handleRegister = async () => {
     const username = usernameRef.current?.value;
-    const lastName = lastNameRef.current?.value;
-    const firstName = firstNameRef.current?.value;
     const email = emailRef.current?.value;
     const password1 = password1Ref.current?.value;
     const password2 = password2Ref.current?.value;
@@ -32,8 +28,6 @@ const RegisterPage: React.FC = () => {
       const response = await turboApi.post("register/", {
         email,
         username,
-        firstName,
-        lastName,
         password1,
         password2,
       });
@@ -53,9 +47,9 @@ const RegisterPage: React.FC = () => {
         return navigate("/login");
       }
 
-      setWarningVisible(true);
+      setIsWarningVisible(true);
     } catch (error) {
-      setWarningVisible(true);
+      setIsWarningVisible(true);
       if (error) handleErrors(error, "Error during registration.");
       throw new Error("Something went wrong with registration");
     }
@@ -68,16 +62,6 @@ const RegisterPage: React.FC = () => {
         <label>
           Username:{/**/}
           <input type="text" id="username" ref={usernameRef} required />
-        </label>
-
-        <label>
-          First Name:{/**/}
-          <input type="text" id="first-name" ref={firstNameRef} required />
-        </label>
-
-        <label>
-          Last Name:{/**/}
-          <input type="text" id="last-name" ref={lastNameRef} required />
         </label>
 
         <label>

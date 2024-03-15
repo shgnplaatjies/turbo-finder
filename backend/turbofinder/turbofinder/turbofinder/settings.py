@@ -27,7 +27,7 @@ SECRET_KEY = config('DJANGO_SECRET')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["turbofinder.pixelscape.co.za", "turbofinder.pixelscape.co.za"]
+ALLOWED_HOSTS = ["turbofinder.pixelscape.co.za", "www.turbofinder.pixelscape.co.za", "localhost", "127.0.0.1"]
 
 
 # Application definition
@@ -52,9 +52,9 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -143,7 +143,7 @@ STATICFILES_DIRS = [
     BASE_DIR / 'react_app/static',
 ]
 
-# STATIC_ROOT = BASE_DIR / "static"
+# STATIC_ROOT = BASE_DIR / "static" // development environment
 STATIC_ROOT= "/home/dextertu/turbofinder/static"
 
 MEDIA_ROOT = "/home/dextertu/turbofinder/media"
@@ -178,10 +178,36 @@ AUTH_USER_MODEL = 'emissions_estimator.TurboFinderUser'
 
 CORS_ORIGIN_ALLOW_ALL = False # TODO: List explicitly in stg + prod
 
+CORS_ALLOW_METHODS = [
+    'GET',
+    'POST',
+    'PUT',
+    'PATCH',
+    'DELETE',
+    'OPTIONS'
+]
+
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
+
+CORS_ALLOW_PREFLIGHT = True # TODO: Find a better solution
+
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
-    'http://127.0.0.1:5173'
+    'http://127.0.0.1:5173',
+    'http://127.0.0.1:8000',
+    'https://turbofinder.pixelscape.co.za'
 ]
+
 
 REST_USE_JWT = True
 

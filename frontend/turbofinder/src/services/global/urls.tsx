@@ -18,3 +18,31 @@ export const GLOBAL_URLS = {
 };
 
 export const TOYOTA_UUID = "2b1d0cd5-59be-4010-83b3-b60c5e5342da";
+
+export const DJANGO_URLS = {
+  dev: `${import.meta.env.VITE_DJANGO_URL_DEV}`,
+  qa: `${import.meta.env.VITE_DJANGO_URL_QA}`,
+  stg: `${import.meta.env.VITE_DJANGO_URL_STG}`,
+  prod: `${import.meta.env.VITE_DJANGO_URL_PROD}`,
+};
+
+export const getDjangoHostUrl = () => {
+  const env = import.meta.env.VITE_NODE_ENV;
+  switch (env) {
+    case env === "development":
+      return DJANGO_URLS.dev;
+
+    case env === "qa":
+      return DJANGO_URLS.qa;
+
+    case env === "stg":
+      return DJANGO_URLS.stg;
+
+    case env === "prod":
+      return DJANGO_URLS.prod;
+
+    default:
+      return DJANGO_URLS.dev;
+  }
+  return;
+};
