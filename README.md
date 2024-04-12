@@ -89,68 +89,33 @@ npm run start
 - `frontend`: React frontend files.
 - `docs`: Documentation files.
 
-# Project Summary
+## Project Summary
 
-## Objective
+#### Objective:
+TurboFinder provides comprehensive insights into Toyota vehicle carbon emissions, allowing effortless access to emissions data.
+  
+#### Backend Implementation:
+  - **Django Framework**: Utilizes Django for data processing, API integration, and user authentication.
+  - **Carbon Emission API Integration**: Successfully integrates with a Carbon Emission calculator API, implementing caching for performance.
+  - **User Authentication & Security**: Implements secure user authentication and API endpoint security for data protection.
+  - **Models and Database Design**: Efficient models using Django ORM ensure seamless storage of vehicle emissions data.
+  - **API Security**: Secured using tokens for robust protection against unauthorized access.
+  
+#### Frontend Implementation:
+  - **Framework Choice**: Developed with React for a modern and reactive user interface.
+  - **Dynamic UI Elements**: Implements dynamic dropdowns for enhanced user interaction.
+  - **Login Page**: Secure login page with a password reset option prioritizes user security.
+  - **Dashboard**: Features dropdowns for selecting Toyota models and years, offering comprehensive data views.
+  - **Results Display**: Effectively displays emissions data with customizable units for user preference.
+  - **User Profile**: Includes a dedicated section for user profile access and management, enhancing user experience.
+  
+#### Conclusion:
 
-TurboFinder provides a platform for comprehensive insights into Toyota vehicle carbon emissions, enabling users to access emissions data effortlessly.
+TurboFinder integrates Django and React.js to deliver comprehensive emissions insights, prioritizing security, user experience, and customization.
 
-## Backend Implementation
-
-### Django Framework
-
-TurboFinder utilizes Django for data processing, API integration, and user authentication.
-
-### Carbon Emission API Integration
-
-Successfully integrates with a Carbon Emission calculator API and implements caching for performance optimization.
-
-### User Authentication & Security
-
-Implements secure user authentication and ensures API endpoint security.
-
-### Models and Database Design
-
-Efficient models using Django ORM facilitate seamless storage of vehicle emissions data.
-
-### API Security
-
-Secures the API using tokens for protection against unauthorized access.
-
-## Frontend Implementation
-
-### Framework Choice
-
-Developed the frontend using React for a modern user interface.
-
-### Dynamic UI Elements
-
-Implements dynamic dropdowns for enhanced user interaction.
-
-### Login Page
-
-Creates a secure login page with a password reset option for a smooth authentication process.
-
-### Dashboard
-
-Features dropdowns for selecting Toyota models and years, providing users a comprehensive view of emissions data.
-
-### Results Display
-
-Effectively displays emissions data on the dashboard with customizable units.
-
-### User Profile
-
-Includes a section for user profile access and management.
-
-## Conclusion
-
-Successfully integrates Django and React.js to deliver carbon emissions insights. Prioritizes security, user experience, and customization for confident access to emissions data.
-
-## Technologies Used
-
-- TypeScript React
-- Python Django with Django ORM
-- Django Identity Management and Robust Security
-- Rate Limiting and User Authentication
-- Frontend Packages Installed Statically on Django Backend Servers to Eliminate Network Latency.
+#### Technologies Used:
+  - TypeScript React
+  - Python Django with Django ORM
+  - Django Identity Management and Robust Security
+  - Rate Limiting and User Authentication
+  - Frontend Packages Installed Statically on Django Backend Servers to Eliminate Network Latency.
