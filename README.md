@@ -91,17 +91,17 @@ npm run start
 
 ## Project Summary
 
-#### Objective:
+### Objective:
 TurboFinder provides comprehensive insights into Toyota vehicle carbon emissions, allowing effortless access to emissions data.
   
-#### Backend Implementation:
+### Backend Implementation:
   - **Django Framework**: Utilizes Django for data processing, API integration, and user authentication.
   - **Carbon Emission API Integration**: Successfully integrates with a Carbon Emission calculator API, implementing caching for performance.
   - **User Authentication & Security**: Implements secure user authentication and API endpoint security for data protection.
   - **Models and Database Design**: Efficient models using Django ORM ensure seamless storage of vehicle emissions data.
   - **API Security**: Secured using tokens for robust protection against unauthorized access.
   
-#### Frontend Implementation:
+### Frontend Implementation:
   - **Framework Choice**: Developed with React for a modern and reactive user interface.
   - **Dynamic UI Elements**: Implements dynamic dropdowns for enhanced user interaction.
   - **Login Page**: Secure login page with a password reset option prioritizes user security.
@@ -109,11 +109,11 @@ TurboFinder provides comprehensive insights into Toyota vehicle carbon emissions
   - **Results Display**: Effectively displays emissions data with customizable units for user preference.
   - **User Profile**: Includes a dedicated section for user profile access and management, enhancing user experience.
   
-#### Conclusion:
+### Conclusion:
 
 TurboFinder integrates Django and React.js to deliver comprehensive emissions insights, prioritizing security, user experience, and customization.
 
-#### Technologies Used:
+## Technologies Used:
   - TypeScript React
   - Python Django with Django ORM
   - Django Identity Management and Robust Security
