@@ -11,23 +11,21 @@ export const getCarbonApi = () =>
     },
   });
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": getDjangoHostUrl(),
-};
-
 export const getTurboApi = () => {
   const authToken = Cookies.get("BearerToken");
 
+  const csrfToken = Cookies.get("XSRF-TOKEN");
+
   const turboApi = axios.create({
-    baseURL: import.meta.env.VITE_DJANGO_URL,
+    baseURL: getDjangoHostUrl(),
     headers: authToken
       ? {
-          ...corsHeaders,
+          "X-XSRF-TOKEN": csrfToken,
           "Content-Type": "application/json",
           Authorization: `Token ${authToken}`,
         }
       : {
-          ...corsHeaders,
+          "X-XSRF-TOKEN": csrfToken,
           "Content-Type": "application/json",
         },
   });

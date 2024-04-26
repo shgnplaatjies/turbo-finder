@@ -2,5 +2,6 @@ export const COOKIE_LIST = {
   carbonApiTokenPrefix: "Bearer",
   turboApiTokenPrefix: "Token",
   turboApiTokenName: "token",
-  csrfTokenName: "X-CSRFToken",
-};
+  csrfTokenCookieName: "X-CSRFToken",
+  bearerTokenCookieName: "BearerToken",
+} as const;
