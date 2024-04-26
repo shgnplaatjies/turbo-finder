@@ -170,45 +170,32 @@ REST_FRAMEWORK = {
     },
 }
 
+REST_AUTH_SERIALIZERS = {
+    'TOKEN_SERIALIZER': 'emissions_estimator.serializers.CustomTokenSerializer',}
+
+
 AUTHENTICATION_CLASSES = [
     'dj_rest_auth.authentication.AllAuthJWTAuthentication',
 ]
 
 AUTH_USER_MODEL = 'emissions_estimator.TurboFinderUser'
 
-CORS_ORIGIN_ALLOW_ALL = False # TODO: List explicitly in stg + prod
+CORS_ORIGIN_ALLOW_ALL = False
 
-CORS_ALLOW_METHODS = [
-    'GET',
-    'POST',
-    'PUT',
-    'PATCH',
-    'DELETE',
-    'OPTIONS'
-]
-
-CORS_ALLOW_HEADERS = [
-    'accept',
-    'accept-encoding',
-    'authorization',
-    'content-type',
-    'dnt',
-    'origin',
-    'user-agent',
-    'x-csrftoken',
-    'x-requested-with',
-]
-
-CORS_ALLOW_PREFLIGHT = True # TODO: Find a better solution
+CORS_ALLOW_PREFLIGHT = True
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
     'http://127.0.0.1:5173',
     'http://127.0.0.1:8000',
+    'http://127.0.0.1',
     'https://turbofinder.pixelscape.co.za'
 ]
 
+ACCOUNT_EMAIL_VERIFICATION = 'none' 
 
-REST_USE_JWT = True
+CSRF_COOKIE_HTTPONLY = True
 
-ACCOUNT_EMAIL_VERIFICATION = 'none' # TODO: Enable email verification during stg + prod
+SESSION_COOKIE_SECURE = True
+
+CSRF_COOKIE_SECURE = True

@@ -4,14 +4,14 @@ import { useNavigate } from "react-router-dom";
 import ChevronIcon from "../../assets/Chevron/Chevron";
 import LogoIcon from "../../assets/Logo/Logo";
 import { getTurboApi } from "../../services/api";
-import { APP_ROUTES, GLOBAL_URLS } from "../../services/global/urls";
+import { APP_ROUTES, getGlobalUrls } from "../../services/global/urls";
 import "./NavBar.scss";
 
 const NavBar: React.FC = () => {
   const logout = async () => {
     const turboApi = getTurboApi();
 
-    const response = await turboApi.post(GLOBAL_URLS.logoutUrl);
+    const response = await turboApi.post(getGlobalUrls().logoutUrl);
 
     if (response.status >= 200 && response.status <= 299) {
       Cookies.remove("BearerToken");

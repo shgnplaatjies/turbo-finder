@@ -7,6 +7,7 @@ import RegisterPage from "./pages/AuthPage/RegisterPage/RegisterPage";
 import DashboardPage from "./pages/DashboardPage/DashboardPage";
 import NotFoundPage from "./pages/NotFoundPage/NotFoundPage";
 import ProfilePage from "./pages/ProfilePage/ProfilePage";
+import { AuthenticationProvider } from "./services/context_providers/AuthenticationProvider";
 import { VehiclesProvider } from "./services/context_providers/VehiclesContextProvider";
 import { ViewableEstimatesProvider } from "./services/context_providers/ViewableEstimatesProvider";
 import { APP_ROUTES } from "./services/global/urls";
@@ -15,41 +16,43 @@ import { useAuth } from "./services/hooks/auth.hook";
 const App = () => {
   const isAuthenticated = useAuth();
   return (
-    <VehiclesProvider>
-      <ViewableEstimatesProvider>
-        <BrowserRouter>
-          {isAuthenticated ? (
-            <header>
-              <NavBar />
-            </header>
-          ) : (
-            <header>
-              <div className="logo-icon">
-                <LogoIcon />
-              </div>
-            </header>
-          )}
-          <Routes>
-            <Route path={APP_ROUTES.login} element={<LoginPage />} />
-            <Route path={APP_ROUTES.register} element={<RegisterPage />} />
-            {isAuthenticated && (
-              <>
-                <Route
-                  path={APP_ROUTES.dashboard}
-                  element={<DashboardPage />}
-                />
-                <Route path={APP_ROUTES.profile} element={<ProfilePage />} />
-              </>
-            )}
+    <AuthenticationProvider>
+      <VehiclesProvider>
+        <ViewableEstimatesProvider>
+          <BrowserRouter basename="/react">
             {isAuthenticated ? (
-              <Route path={APP_ROUTES.notFound} element={<NotFoundPage />} />
+              <header>
+                <NavBar />
+              </header>
             ) : (
-              <Route path={APP_ROUTES.notFound} element={<LoginPage />} />
+              <header>
+                <div className="logo-icon">
+                  <LogoIcon />
+                </div>
+              </header>
             )}
-          </Routes>
-        </BrowserRouter>
-      </ViewableEstimatesProvider>
-    </VehiclesProvider>
+            <Routes>
+              <Route path={APP_ROUTES.login} element={<LoginPage />} />
+              <Route path={APP_ROUTES.register} element={<RegisterPage />} />
+              {isAuthenticated && (
+                <>
+                  <Route
+                    path={APP_ROUTES.dashboard}
+                    element={<DashboardPage />}
+                  />
+                  <Route path={APP_ROUTES.profile} element={<ProfilePage />} />
+                </>
+              )}
+              {isAuthenticated ? (
+                <Route path={APP_ROUTES.notFound} element={<NotFoundPage />} />
+              ) : (
+                <Route path={APP_ROUTES.notFound} element={<LoginPage />} />
+              )}
+            </Routes>
+          </BrowserRouter>
+        </ViewableEstimatesProvider>
+      </VehiclesProvider>
+    </AuthenticationProvider>
   );
 };
 

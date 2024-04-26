@@ -1,7 +1,7 @@
 import { AxiosError, isAxiosError } from "axios";
 import React, { useState } from "react";
 import { getTurboApi } from "../../services/api";
-import { GLOBAL_URLS } from "../../services/global/urls";
+import { getGlobalUrls } from "../../services/global/urls";
 import { handleErrors } from "../../services/handleErrors";
 import { useVehiclesContext } from "../../services/hooks/Vehicle.hook";
 import { useViewableEstimatesContext } from "../../services/hooks/ViewableEstimates.hook";
@@ -37,7 +37,7 @@ const AddEstimation: React.FC = () => {
     try {
       const turboApi = getTurboApi();
 
-      await turboApi.post(GLOBAL_URLS.emissionsEstimateGeneral, {
+      await turboApi.post(getGlobalUrls().emissionsEstimateGeneral, {
         uuid: selectedModel.uuid,
       });
 

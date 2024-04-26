@@ -2,7 +2,7 @@ import { AxiosError, isAxiosError } from "axios";
 import React, { useState } from "react";
 import { getTurboApi } from "../../services/api";
 import { ViewableEstimate } from "../../services/contexts/ViewableEstimatesContext";
-import { GLOBAL_URLS } from "../../services/global/urls";
+import { getGlobalUrls } from "../../services/global/urls";
 import { handleErrors } from "../../services/handleErrors";
 import { useVehiclesContext } from "../../services/hooks/Vehicle.hook";
 import { useViewableEstimatesContext } from "../../services/hooks/ViewableEstimates.hook";
@@ -25,7 +25,7 @@ const EstimatesTable: React.FC = () => {
     const turboApi = getTurboApi();
 
     try {
-      await turboApi.post(GLOBAL_URLS.viewableEmissionsEstimateGeneral, {
+      await turboApi.post(getGlobalUrls().viewableEmissionsEstimateGeneral, {
         emissions_estimate: { id: item.emissions_estimate.id },
       });
 

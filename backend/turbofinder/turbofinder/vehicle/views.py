@@ -141,11 +141,6 @@ class VehicleModelCreateView(generics.ListCreateAPIView):
     
     existing_make = VehicleMake.objects.filter(uuid=make_uuid).first();
     
-    if existing_make:
-      return Response(
-        {'error': 'This Make already exists in the database'},
-        status=status.HTTP_409_CONFLICT
-      )
 
     
     carbon_api_url = f"{CARBON_EMISSIONS_API_URL}/vehicle_makes/{make_uuid}/vehicle_models"

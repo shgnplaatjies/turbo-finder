@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import UnlockModal from "../../components/TurboModal/UnlockModal";
 import { getTurboApi } from "../../services/api";
 import { ERROR_MESSAGES } from "../../services/constants/errorMessages";
-import { GLOBAL_URLS } from "../../services/global/urls";
+import { getGlobalUrls } from "../../services/global/urls";
 import { handleErrors } from "../../services/handleErrors";
 import "./ProfilePage.scss";
 interface UserInfoProps {
@@ -35,7 +35,9 @@ const ProfilePage: React.FC = () => {
     const getUserInfo = async () => {
       try {
         const turboApi = getTurboApi();
-        const userInfoResponse = await turboApi.get(GLOBAL_URLS.userInfoList);
+        const userInfoResponse = await turboApi.get(
+          getGlobalUrls().userInfoList
+        );
 
         setUserInfo(userInfoResponse.data[0]);
         setCredits(userInfoResponse.data[0].credits);
@@ -59,7 +61,7 @@ const ProfilePage: React.FC = () => {
       const turboApi = getTurboApi();
 
       const creditsResponse = await turboApi.patch(
-        GLOBAL_URLS.userCreditsRetrieve
+        getGlobalUrls().userCreditsRetrieve
       );
 
       setCredits(creditsResponse.data.credits);
