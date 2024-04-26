@@ -1,15 +1,15 @@
 import { ReactNode, createElement, useEffect, useState } from "react";
+import { getGlobalUrls } from "../../services/global/urls";
 import { getTurboApi } from "../api";
-import { VehiclesContext } from "../contexts/VehiclesContext";
-
 import {
   DistanceUnit,
   VehicleModel,
+  VehiclesContext,
   VehiclesContextActions,
   VehiclesContextValue,
 } from "../contexts/VehiclesContext";
-import { GLOBAL_URLS, TOYOTA_UUID } from "../global/urls";
 import { handleErrors } from "../handleErrors";
+import { useAuthenticationContext } from "../hooks/Authentication.hook";
 
 interface VehiclesProviderProps {
   children: ReactNode;
@@ -18,6 +18,8 @@ interface VehiclesProviderProps {
 export const VehiclesProvider: React.FC<VehiclesProviderProps> = ({
   children,
 }) => {
+  const { authStatus } = useAuthenticationContext();
+
   const [refresh, setRefresh] = useState<boolean>(false);
 
   const offsetStep = 100;
@@ -45,12 +47,12 @@ export const VehiclesProvider: React.FC<VehiclesProviderProps> = ({
       const turboApi = getTurboApi();
 
       const vehicleModelsResponse = await turboApi.get(
-        `/api/vehicle-make/${TOYOTA_UUID}/models/`,
+        getGlobalUrls().vehicleModelsRetrieve,
         { data: { limit: offsetStep, offset: offsetValue } }
       );
 
       const unitsResponse = await turboApi.get(
-        GLOBAL_URLS.distanceUnitsGeneral
+        getGlobalUrls().distanceUnitsGeneral
       );
 
       const modelsData: VehicleModel[] = vehicleModelsResponse.data;
@@ -78,8 +80,8 @@ export const VehiclesProvider: React.FC<VehiclesProviderProps> = ({
   const refreshContext = () => setRefresh((prev) => !prev);
 
   useEffect(() => {
-    fetchData(offset);
-  }, [offset, refresh]);
+    if (authStatus.isAuthenticated) fetchData(offset);
+  }, [offset, refresh, authStatus]);
 
   const updateOffset: VehiclesContextActions["updateOffset"] = (multiple) => {
     if (!multiple) return setOffset(0);

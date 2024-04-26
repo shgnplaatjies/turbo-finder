@@ -1,12 +1,13 @@
 import React, { ReactNode, createElement, useEffect, useState } from "react";
+import { getGlobalUrls } from "../../services/global/urls";
 import { getTurboApi } from "../api";
 import {
   ViewableEstimate,
   ViewableEstimatesContext,
   ViewableEstimatesContextValue,
 } from "../contexts/ViewableEstimatesContext";
-import { GLOBAL_URLS } from "../global/urls";
 import { handleErrors } from "../handleErrors";
+import { useAuthenticationContext } from "../hooks/Authentication.hook";
 
 interface ViewableEstimatesProviderProps {
   children: ReactNode;
@@ -18,14 +19,17 @@ export const ViewableEstimatesProvider: React.FC<
   const [viewableEstimates, setViewableEstimates] = useState<
     ViewableEstimate[]
   >([]);
+
   const [refresh, setRefresh] = useState(false);
+
+  const { authStatus } = useAuthenticationContext();
 
   const fetchViewableEstimates = async () => {
     try {
       const turboApi = getTurboApi();
 
       const response = await turboApi.get(
-        GLOBAL_URLS.viewableEmissionsEstimateAll
+        getGlobalUrls().viewableEmissionsEstimateAll
       );
 
       if (response.status === 200) {
@@ -39,8 +43,8 @@ export const ViewableEstimatesProvider: React.FC<
   const refreshContext = () => setRefresh((prev) => !prev);
 
   useEffect(() => {
-    fetchViewableEstimates();
-  }, [refresh]);
+    if (authStatus.isAuthenticated) fetchViewableEstimates();
+  }, [refresh, authStatus]);
 
   const contextValue: ViewableEstimatesContextValue = {
     viewableEstimates,
