@@ -17,6 +17,14 @@ export const GLOBAL_URLS = {
   viewableEmissionsEstimateAll: "api/viewable-emission-estimates/all/",
 };
 
+export const APP_ROUTES = {
+  login: "/login",
+  register: "/register",
+  dashboard: "/",
+  profile: "/profile",
+  notFound: "*",
+};
+
 export const TOYOTA_UUID = "2b1d0cd5-59be-4010-83b3-b60c5e5342da";
 
 export const DJANGO_URLS = {
@@ -44,5 +52,4 @@ export const getDjangoHostUrl = () => {
     default:
       return DJANGO_URLS.dev;
   }
-  return;
 };

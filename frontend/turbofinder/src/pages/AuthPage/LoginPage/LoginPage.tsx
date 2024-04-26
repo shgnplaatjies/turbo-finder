@@ -3,6 +3,7 @@ import Cookies from "js-cookie";
 import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getTurboApi } from "../../../services/api";
+import { APP_ROUTES } from "../../../services/global/urls";
 import { handleErrors } from "../../../services/handleErrors";
 import "../AuthPage.scss";
 
@@ -47,8 +48,8 @@ const LoginPage: React.FC = () => {
           secure: import.meta.env.MODE !== "development",
         });
 
-        navigate("/", { replace: true });
-        window.location.reload();
+        navigate(APP_ROUTES.dashboard, { replace: true });
+        // window.location.reload();
         return;
       }
 
@@ -87,7 +88,9 @@ const LoginPage: React.FC = () => {
         <p>
           Already have an account?{" "}
           <span>
-            <a onClick={() => navigate("/register")}>Register instead.</a>
+            <a onClick={() => navigate(APP_ROUTES.register)}>
+              Register instead.
+            </a>
           </span>
         </p>
       </form>

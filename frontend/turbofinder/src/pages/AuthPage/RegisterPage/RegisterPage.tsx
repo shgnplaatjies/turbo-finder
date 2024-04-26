@@ -3,6 +3,7 @@ import Cookies from "js-cookie";
 import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getTurboApi } from "../../../services/api";
+import { APP_ROUTES } from "../../../services/global/urls";
 import { handleErrors } from "../../../services/handleErrors";
 import "../AuthPage.scss";
 
@@ -44,7 +45,7 @@ const RegisterPage: React.FC = () => {
           Cookies.set(cookieName, cookieValue, { expires: 7 });
         });
 
-        return navigate("/login");
+        return navigate(APP_ROUTES.login);
       }
 
       setIsWarningVisible(true);
@@ -90,7 +91,7 @@ const RegisterPage: React.FC = () => {
         <p>
           Already have an account?{" "}
           <span>
-            <a onClick={() => navigate("/login")}>Login instead.</a>
+            <a onClick={() => navigate(APP_ROUTES.login)}>Login instead.</a>
           </span>
         </p>
       </form>

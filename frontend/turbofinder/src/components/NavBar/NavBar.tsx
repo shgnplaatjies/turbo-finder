@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import ChevronIcon from "../../assets/Chevron/Chevron";
 import LogoIcon from "../../assets/Logo/Logo";
 import { getTurboApi } from "../../services/api";
-import { GLOBAL_URLS } from "../../services/global/urls";
+import { APP_ROUTES, GLOBAL_URLS } from "../../services/global/urls";
 import "./NavBar.scss";
 
 const NavBar: React.FC = () => {
@@ -28,12 +28,12 @@ const NavBar: React.FC = () => {
       </button>
       <button
         type="button"
-        onClick={() => navigate("/")}
+        onClick={() => navigate(APP_ROUTES.dashboard)}
         aria-label="Go to homepage"
       >
         <LogoIcon />
       </button>
-      <button type="button" onClick={() => navigate("/profile")}>
+      <button type="button" onClick={() => navigate(APP_ROUTES.profile)}>
         Profile
       </button>
       <button type="button" onClick={logout}>
