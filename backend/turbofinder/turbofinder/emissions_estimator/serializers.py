@@ -1,6 +1,27 @@
 from rest_framework import serializers
 from .models import ViewableEmissionEstimates, EmissionEstimate, DistanceUnit, TurboFinderUser
 from vehicle.serializers import VehicleModelSerializer
+from rest_framework.authtoken.serializers import AuthTokenSerializer
+
+
+class CustomTokenSerializer(AuthTokenSerializer):
+    """
+    Serializer class that adds custom configurations to the Bearer Token.
+
+    Attributes:
+        create: Overwrites the default create method for creating new bearer tokens
+        """
+    def create(self, validated_data):
+        
+        """
+        Custom create class that sets samesite to none and secure to True, allowing for secure cross-origin and same-origin requests.
+        """
+        token = super().create(validated_data)
+
+        token['cookie'] = 'BearerToken'
+        token['cookie_attribues'] = {'SameSite': 'None', 'secure': True}
+        
+        return token
 
 
 class TurboFinderUserInfoSerializer(serializers.ModelSerializer):
