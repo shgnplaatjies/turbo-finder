@@ -1,47 +1,54 @@
 import axios from "axios";
 import Cookies from "js-cookie";
-import { GLOBAL_URLS } from "../global/urls";
+import { getGlobalUrls } from "../global/urls";
 import { handleErrors } from "../handleErrors";
-
-interface BearerTokenProps {
-  username: string;
-  password: string;
-}
 
 export const getBearerToken = async ({
   username,
   password,
-}: BearerTokenProps): Promise<string | 404> => {
+}: {
+  username: string;
+  password: string;
+}): Promise<string | null> => {
   try {
     const response = await axios.post(
-      `${GLOBAL_URLS.applicationRoot}${GLOBAL_URLS.getTokenUrl}`,
+      `${getGlobalUrls().applicationRoot}${getGlobalUrls().getTokenUrl}`,
       { username, password }
     );
+
     const { token } = response.data;
 
-    Cookies.set("BearerToken", token);
+    if (token) {
+      Cookies.set("BearerToken", token, {
+        expires: 7,
+        sameSite: "None",
+        secure: import.meta.env.MODE !== "development",
+      });
 
-    if (token) return token;
+      return token;
+    }
 
-    return 404;
+    return null;
   } catch (error) {
     handleErrors(error, "Something went wrong with login");
-    return 404;
+    return null;
   }
 };
 
-export const checkBearerToken = async (token: string) => {
-  const response = await axios.get(
-    `${GLOBAL_URLS.applicationRoot}${GLOBAL_URLS.userCreditsList}`,
-    {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Token ${token}`,
-      },
-    }
-  );
+export const checkBearerToken = async (token: string): Promise<boolean> => {
+  try {
+    const response = await axios.get(
+      `${getGlobalUrls().applicationRoot}${getGlobalUrls().userCreditsList}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${token}`,
+        },
+      }
+    );
 
-  if (response.status == 200) return true;
-
-  return false;
+    return response.status === 200;
+  } catch (error) {
+    return false;
+  }
 };

@@ -3,23 +3,23 @@ import { useEffect, useState } from "react";
 import { checkBearerToken } from "../auth/auth.service";
 
 export const useAuth = (): boolean => {
-  const [isAuthenticated, setAuthenticated] = useState<boolean>(false);
+  const [authenticated, setAuthenticated] = useState<boolean>(false);
 
   useEffect(() => {
     const verifyAuth = async () => {
-      setAuthenticated(false);
-
       const bearerToken = Cookies.get("BearerToken");
 
-      if (!bearerToken) return;
+      if (!bearerToken) {
+        setAuthenticated(false);
+        return;
+      }
 
-      const checkBearer = await checkBearerToken(bearerToken);
-
-      setAuthenticated(checkBearer);
+      const isAuthenticated = await checkBearerToken(bearerToken);
+      setAuthenticated(isAuthenticated);
     };
 
     verifyAuth();
   }, []);
 
-  return isAuthenticated;
+  return authenticated;
 };
